@@ -1,0 +1,35 @@
+body {
+  display: grid;
+  padding: 32px;
+  justify-content: center;
+  margin-top: 32px;
+  padding: 16px;
+  font-size: 16px;
+  font-family: Menlo, monospace;
+}
+main {
+  max-width: 800px;
+}
+.paragraph {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px 16px;
+  font-size: 32px;
+  user-select: none;
+}
+.word{
+  color: gray;
+  display: flex;
+  &.active{
+    color: lightgray;
+  }
+  
+}
+.letter{
+  &.correct{
+    color: lightskyblue;
+  }
+  &.incorrect{
+    color: indianred;
+  }
+}
