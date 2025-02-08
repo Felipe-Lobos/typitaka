@@ -15,9 +15,6 @@ function App() {
   const previousCurrentWordIndex = useRef(0);
   const [currentTyping, setCurrentTyping] = useState("");
   const [renderWords, setRenderWords] = useState(null);
-  const lettersClassList = useRef([]);
-  const wordsClassList = useRef([]);
-
   const [wordsData, setWordsData] = useState([]);
   //estructura de datos
   /**
@@ -35,18 +32,19 @@ function App() {
   const { wordsCount, lettersCount } = useMemo(() => {
     let wordsCount = { correct: 0, incorrect: 0, missed: 0 };
     let lettersCount = { correct: 0, incorrect: 0, missed: 0 };
-    wordsData.slice(0, currentWordIndex).forEach((word) => {
+    wordsData.slice(0, currentWordIndex+1).forEach((word) => {
       word.status === "correct" && wordsCount.correct++;
       word.status === "incorrect" && wordsCount.incorrect++;
       word.status === "missed" && wordsCount.missed++;
       word.letters.forEach((letter) => {
         letter.status === "correct" && lettersCount.correct++;
         letter.status === "incorrect" && lettersCount.incorrect++;
-        letter.status === "missed" && lettersCount.missed++;
+        letter.status === "missed" && lettersCount.missed++;10
       });
-    }); 
-    return wordsCount, lettersCount;
-  }, [wordsData]);
+      //console.log('word.letters',word.letters)
+    });
+    return {wordsCount:wordsCount, lettersCount:lettersCount};
+  }, [wordsData, currentWordIndex]);
 
   const initializeWordsData = () => {
     const newWordsData = [];
@@ -67,76 +65,16 @@ function App() {
   //se ejecuta al iniciar o detener el juego
   useEffect(() => {
     //setWords(INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, 50))
-    setInitialClasses();
     initializeWordsData();
-    addClassToWord(currentWordIndex, "active");
     //setRenderWords(getRenderWords2());
   }, []);
 
   //renderizar todas las palabras y letras de nuevo
   useEffect(() => {
-    setRenderWords(getRenderWords2());
-  }, [currentTyping, currentWordIndex]);
-
-  useEffect(() => {
-    removeClassToWord(previousCurrentWordIndex.current, "active");
-    addClassToWord(currentWordIndex, "active");
-    setRenderWords(getRenderWords2());
+    setRenderWords(getRenderWords());
   }, [currentWordIndex, wordsData]);
 
-  const addClassToLetter = (wordIndex, letterIndex, classToAdd) => {
-    const currentClasses = lettersClassList.current[wordIndex][letterIndex];
-    if (!currentClasses.includes(classToAdd)) {
-      lettersClassList.current[wordIndex][letterIndex].push(classToAdd);
-    }
-  };
-  const removeClassToLetter = (wordIndex, letterIndex, classToRemove) => {
-    const currentClasses = lettersClassList.current[wordIndex][letterIndex];
-    if (currentClasses.includes(classToRemove)) {
-      lettersClassList.current[wordIndex][letterIndex] =
-        lettersClassList.current[wordIndex][letterIndex].filter(
-          (cls) => cls !== classToRemove
-        );
-    }
-  };
-  const addClassToWord = (wordIndex, classToAdd) => {
-    const currentClasses = wordsClassList.current[wordIndex];
-    if (!currentClasses.includes(classToAdd)) {
-      wordsClassList.current[wordIndex].push(classToAdd);
-    }
-  };
-  const removeClassToWord = (wordIndex, classToRemove) => {
-    const currentClasses = wordsClassList.current[wordIndex];
-    if (currentClasses.includes(classToRemove)) {
-      wordsClassList.current[wordIndex] = wordsClassList.current[
-        wordIndex
-      ].filter((cls) => cls !== classToRemove);
-    }
-  };
-
-  const checkLetter = (wordIndex, letterIndex, typedLetter) => {
-    // removeClassToLetter(wordIndex,letterIndex,'incorrect');
-    // removeClassToLetter(wordIndex,letterIndex,'correct');
-    if (typedLetter === words[wordIndex][letterIndex]) {
-      addClassToLetter(wordIndex, letterIndex, "correct");
-    } else {
-      addClassToLetter(wordIndex, letterIndex, "incorrect");
-    }
-  };
-
-  const setInitialClasses = () => {
-    lettersClassList.current = [];
-    const wordClasses = Array.from({ length: words.length }, () => ["word"]);
-    wordsClassList.current = wordClasses;
-    words.map((word) => {
-      const letterClasses = Array.from({ length: word.length }, () => [
-        "letter",
-      ]);
-      lettersClassList.current.push(letterClasses);
-    });
-  };
-
-  const getRenderWords2 = () => {
+  const getRenderWords = () => {
     const innerWords = wordsData.map((word, wordIndex) => {
       const innerLetters = word.letters;
       return (
@@ -160,65 +98,7 @@ function App() {
     return innerWords;
   };
 
-  const getRenderWords = () => {
-    const innerWords = words.map((word, wordIndex) => {
-      const innerLetters = word.split("");
-      return (
-        <div
-          className={
-            (wordsClassList.current[wordIndex] &&
-              wordsClassList.current[wordIndex].join(" ")) ||
-            "word"
-          }
-          key={`${word}${wordIndex}`}
-        >
-          {innerLetters.map((letter, letterIndex) => {
-            return (
-              <span
-                className={
-                  (lettersClassList.current[wordIndex] &&
-                    lettersClassList.current[wordIndex][letterIndex] &&
-                    lettersClassList.current[wordIndex][letterIndex].join(
-                      " "
-                    )) ||
-                  "letter"
-                }
-                key={`${word}${wordIndex}-${letter}${letterIndex}`}
-              >
-                {letter}
-              </span>
-            );
-          })}
-        </div>
-      );
-    });
-
-    return innerWords;
-  };
-
   const handleOnChange = (event) => {
-    const wordLegnth = words[currentWordIndex].length;
-    inputRef.current.maxLength = wordLegnth;
-    const value = event.target.value;
-    setCurrentTyping(value);
-
-    //clean letters classes
-    for (let i = 0; i < wordLegnth; i++) {
-      removeClassToLetter(currentWordIndex, i, "incorrect");
-      removeClassToLetter(currentWordIndex, i, "correct");
-      // removeClassToLetter(currentWordIndex, i, "letter-active");
-    }
-    //check y compare letters
-    for (let i = 0; i < value.length; i++) {
-      checkLetter(currentWordIndex, i, value[i]);
-    }
-    // if(currentTyping.length>0){
-    //   console.log(currentTyping.length)
-    //   addClassToLetter(currentWordIndex,currentTyping.length,'letter-active');
-    // }
-  };
-
-  const handleOnChange2 = (event) => {
     const wordLegnth = wordsData[currentWordIndex].id.length;
     inputRef.current.maxLength = wordLegnth;
     const value = event.target.value;
@@ -309,20 +189,20 @@ function App() {
       typedWords.current[currentWordIndex] = currentTyping;
       if (currentWordIndex < cantOfWords - 1) {
         setCurrentTyping("");
-        setCurrentWordIndex((prev) => {
-          previousCurrentWordIndex.current = prev;
+        setCurrentWordIndex((prevWordIndex) => {
+          previousCurrentWordIndex.current = prevWordIndex;
 
           //UPDATEACTIVEWORDDATA(CURRENTINDEX, NEWINDEX)
           setWordsData((prevWordsData) => {
             const newWordsData = [...prevWordsData];
-            newWordsData[prev + 1] = {
-              ...newWordsData[prev + 1],
+            newWordsData[prevWordIndex + 1] = {
+              ...newWordsData[prevWordIndex + 1],
               status: "active",
             };
             return newWordsData;
           });
 
-          return prev + 1;
+          return prevWordIndex + 1;
         });
       } else {
         console.log("finalizar juego ");
@@ -330,27 +210,56 @@ function App() {
     }
     if (key === "Backspace") {
       if (currentTyping === "" && currentWordIndex > 0) {
-        setCurrentWordIndex((prev) => {
-          previousCurrentWordIndex.current = prev;
-          setCurrentTyping(typedWords.current[prev - 1]);
-          return prev - 1;
+        setCurrentWordIndex((prevWordIndex) => {
+          previousCurrentWordIndex.current = prevWordIndex;
+          setCurrentTyping(typedWords.current[prevWordIndex - 1]);
+
+          //UPDATEACTIVEWORDDATA(CURRENTINDEX, NEWINDEX)
+          setWordsData((prevWordsData) => {
+            const newWordsData = [...prevWordsData];
+            newWordsData[prevWordIndex] = {
+              ...newWordsData[prevWordIndex],
+              status: "",
+            };
+            newWordsData[prevWordIndex-1] = {
+              ...newWordsData[prevWordIndex-1],
+              status: "active",
+            };
+
+            return newWordsData;
+          });
+
+          return prevWordIndex - 1;
         });
       }
     }
   };
+
   return (
     <>
       <main>
         <h1>Monkeytype -V2</h1>
+        
         <Timer initialTime={10}></Timer>
+
         <input
           value={currentTyping}
           onKeyDown={handleOnKeyDown}
-          onChange={handleOnChange2}
+          onChange={handleOnChange}
           autoFocus
           ref={inputRef}
           type="text"
         />
+        
+                <span>{`p.correctas ${wordsCount.correct}`}</span>
+                <span>{`p.incorrectas ${wordsCount.incorrect}`}</span>
+                <span>{`p.missed ${wordsCount.missed}`}</span>
+                <span>{`l.correctas ${lettersCount.correct}`}</span>
+                <span>{`l.incorrectas ${lettersCount.incorrect}`}</span>
+                <span>{`l.missed ${lettersCount.missed}`}</span>
+                
+
+
         <button onClick={() => setPlaying(!playing)}>start</button>
         <div className="paragraph">{renderWords}</div>
       </main>
