@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { words as INITIAL_WORDS } from "./data/words";
 import { Timer } from "./components/Timer";
 
 function App() {
+  const totalTime = 10;
   const inputRef = useRef();
   const [cantOfWords, setCantOfWords] = useState(50);
   const [words, setWords] = useState(
     INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, cantOfWords)
   );
   const [playing, setPlaying] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(totalTime);
   const typedWords = useRef([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const previousCurrentWordIndex = useRef(0);
@@ -30,20 +33,22 @@ function App() {
    */
 
   const { wordsCount, lettersCount } = useMemo(() => {
-    let wordsCount = { correct: 0, incorrect: 0, missed: 0 };
-    let lettersCount = { correct: 0, incorrect: 0, missed: 0 };
-    wordsData.slice(0, currentWordIndex+1).forEach((word) => {
+    let wordsCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };
+    let lettersCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };
+    wordsData.slice(0, currentWordIndex + 1).forEach((word) => {
       word.status === "correct" && wordsCount.correct++;
       word.status === "incorrect" && wordsCount.incorrect++;
       word.status === "missed" && wordsCount.missed++;
+      //wordsCount.total++;
       word.letters.forEach((letter) => {
         letter.status === "correct" && lettersCount.correct++;
         letter.status === "incorrect" && lettersCount.incorrect++;
-        letter.status === "missed" && lettersCount.missed++;10
+        letter.status === "missed" && lettersCount.missed++;
+        letter.typed && lettersCount.total++;
       });
       //console.log('word.letters',word.letters)
     });
-    return {wordsCount:wordsCount, lettersCount:lettersCount};
+    return { wordsCount: wordsCount, lettersCount: lettersCount };
   }, [wordsData, currentWordIndex]);
 
   const initializeWordsData = () => {
@@ -66,7 +71,6 @@ function App() {
   useEffect(() => {
     //setWords(INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, 50))
     initializeWordsData();
-    //setRenderWords(getRenderWords2());
   }, []);
 
   //renderizar todas las palabras y letras de nuevo
@@ -205,6 +209,7 @@ function App() {
           return prevWordIndex + 1;
         });
       } else {
+        setGameOver(true)
         console.log("finalizar juego ");
       }
     }
@@ -221,8 +226,8 @@ function App() {
               ...newWordsData[prevWordIndex],
               status: "",
             };
-            newWordsData[prevWordIndex-1] = {
-              ...newWordsData[prevWordIndex-1],
+            newWordsData[prevWordIndex - 1] = {
+              ...newWordsData[prevWordIndex - 1],
               status: "active",
             };
 
@@ -235,12 +240,39 @@ function App() {
     }
   };
 
+  const getAccuracy = (totalLettersTyped, correctLettersCount) => {
+    if (!totalLettersTyped || !correctLettersCount) return 0;
+    const accuracy = ((correctLettersCount / totalLettersTyped) * 100).toFixed(
+      0
+    );
+
+    return accuracy;
+  };
+
+  const handleOnTick = useCallback((timeLeft)=>{
+    console.log("🚀 ~ handleOnTick ~ timeLeft:", timeLeft)
+    setRemainingTime(timeLeft)
+  },[])
+  const handleOnTimeEnd = useCallback(()=>{
+    console.log('GameOver')
+    setGameOver(true)
+  },[])
+
+
+
   return (
     <>
       <main>
         <h1>Monkeytype -V2</h1>
-        
-        <Timer initialTime={10}></Timer>
+        <div className="timer-wrap">
+          <span>Tiempo restante:</span>
+          <Timer
+            totalTime={totalTime}
+            onTick={handleOnTick}
+            gameOver={gameOver}
+            onTimeEnd={handleOnTimeEnd}
+          />
+        </div>
 
         <input
           value={currentTyping}
@@ -250,15 +282,22 @@ function App() {
           ref={inputRef}
           type="text"
         />
-        
-                <span>{`p.correctas ${wordsCount.correct}`}</span>
-                <span>{`p.incorrectas ${wordsCount.incorrect}`}</span>
-                <span>{`p.missed ${wordsCount.missed}`}</span>
-                <span>{`l.correctas ${lettersCount.correct}`}</span>
-                <span>{`l.incorrectas ${lettersCount.incorrect}`}</span>
-                <span>{`l.missed ${lettersCount.missed}`}</span>
-                
 
+        <section className="stadistics">
+          <span>{`p.correctas ${wordsCount.correct}`}</span>
+          <span>{`p.incorrectas ${wordsCount.incorrect}`}</span>
+          <span>{`p.missed ${wordsCount.missed}`}</span>
+          <span>{`l.correctas ${lettersCount.correct}`}</span>
+          <span>{`l.incorrectas ${lettersCount.incorrect}`}</span>
+          <span>{`l.missed ${lettersCount.missed}`}</span>
+          <span>
+            {" "}
+            {`porcentaje de acierto: ${getAccuracy(
+              lettersCount.total,
+              lettersCount.correct
+            )}`}{" "}
+          </span>
+        </section>
 
         <button onClick={() => setPlaying(!playing)}>start</button>
         <div className="paragraph">{renderWords}</div>

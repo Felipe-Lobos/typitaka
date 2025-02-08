@@ -1,20 +1,30 @@
 import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
-export function Timer({ initialTime }) {
-  const [time, setTime] = useState(initialTime);
+export function Timer({ totalTime = 60, onTimeEnd, onTick, gameOver }) {
+  //onTick: pfunciona Callback para manejar los tick en el componente padre
+  //gameOver: boolean
+  //onTimeEnd, funcion callback para manejar cuando se acaba el tiempo
+  //totalTime: es el timpo inicial del timeer
+
+  const [timeLeft, SetTimeLeft] = useState(totalTime);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime <= 0) {
-          clearInterval(interval);
-          return 0;
-        } else {
-          return prevTime - 1;
-        }
-      }); // ✅ Usa siempre el valor más reciente
+    if (gameOver) return;
+    const intervalId = setInterval(() => {
+      SetTimeLeft((prevTime) => {
+        const newTime = prevTime - 1;
+        return newTime;
+      });
     }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-  return <span>{time}</span>;
+    return () => clearInterval(intervalId);
+  }, [ gameOver]);
+
+  useEffect(()=>{
+    if (onTick) onTick(timeLeft);
+    if(timeLeft <=0 && onTimeEnd){
+      onTimeEnd();
+    }
+  },[timeLeft, onTimeEnd, onTick])
+
+  return <span>{timeLeft}</span>;
 }
