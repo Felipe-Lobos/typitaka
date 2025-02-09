@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { words as INITIAL_WORDS } from "./data/words";
 import { Timer } from "./components/Timer";
+import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
 
 function App() {
   const totalTime = 10;
@@ -17,7 +18,6 @@ function App() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const previousCurrentWordIndex = useRef(0);
   const [currentTyping, setCurrentTyping] = useState("");
-  const [renderWords, setRenderWords] = useState(null);
   const [wordsData, setWordsData] = useState([]);
   //estructura de datos
   /**
@@ -74,33 +74,6 @@ function App() {
   }, []);
 
   //renderizar todas las palabras y letras de nuevo
-  useEffect(() => {
-    setRenderWords(getRenderWords());
-  }, [currentWordIndex, wordsData]);
-
-  const getRenderWords = () => {
-    const innerWords = wordsData.map((word, wordIndex) => {
-      const innerLetters = word.letters;
-      return (
-        <div
-          className={`word ${word.status ? word.status : ""}`}
-          key={`${word.id}${wordIndex}`}
-        >
-          {innerLetters.map((letter, letterIndex) => {
-            return (
-              <span
-                className={`letter ${letter.status ? letter.status : ""}`}
-                key={`${word}${wordIndex}-${letter.char}${letterIndex}`}
-              >
-                {letter.char}
-              </span>
-            );
-          })}
-        </div>
-      );
-    });
-    return innerWords;
-  };
 
   const handleOnChange = (event) => {
     const wordLegnth = wordsData[currentWordIndex].id.length;
@@ -209,7 +182,7 @@ function App() {
           return prevWordIndex + 1;
         });
       } else {
-        setGameOver(true)
+        setGameOver(true);
         console.log("finalizar juego ");
       }
     }
@@ -249,16 +222,14 @@ function App() {
     return accuracy;
   };
 
-  const handleOnTick = useCallback((timeLeft)=>{
-    console.log("🚀 ~ handleOnTick ~ timeLeft:", timeLeft)
-    setRemainingTime(timeLeft)
-  },[])
-  const handleOnTimeEnd = useCallback(()=>{
-    console.log('GameOver')
-    setGameOver(true)
-  },[])
-
-
+  const handleOnTick = useCallback((timeLeft) => {
+    console.log("🚀 ~ handleOnTick ~ timeLeft:", timeLeft);
+    setRemainingTime(timeLeft);
+  }, []);
+  const handleOnTimeEnd = useCallback(() => {
+    console.log("GameOver");
+    setGameOver(true);
+  }, []);
 
   return (
     <>
@@ -300,7 +271,7 @@ function App() {
         </section>
 
         <button onClick={() => setPlaying(!playing)}>start</button>
-        <div className="paragraph">{renderWords}</div>
+        <WordsLetterRenderer wordsData={wordsData} />
       </main>
     </>
   );
