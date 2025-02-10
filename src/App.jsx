@@ -5,6 +5,7 @@ import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsR
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
 import { BlurOverlay } from "./components/BlurOverlay";
+import { ScoreComponent } from "./components/ScoreComponent";
 
 function App() {
   const [totalTime, setTotalTime] = useState(15);
@@ -250,7 +251,6 @@ function App() {
     const accuracy = ((correctLettersCount / totalLettersTyped) * 100).toFixed(
       0
     );
-
     return accuracy;
   };
 
@@ -349,6 +349,9 @@ function App() {
             wordsData={wordsData}
             inputOnBlur={inputOnBlur}
           />
+        </div>
+        <div className="score-container">
+        <ScoreComponent wordsCount={wordsCount} lettersCount={lettersCount} timeLeft={remainingTime} totalTime={totalTime} />
         </div>
       </main>
     </>

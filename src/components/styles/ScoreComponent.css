@@ -1,0 +1,24 @@
+.score-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.score-modal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* align-content: space-between;
+    justify-content: space-between;
+    align-items: space-between; */
+  width: 100%;
+  gap: 20px;
+}
+.score-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 15px;
+  background-color: lightslategrey;
+  border-radius: 5px;
+}
