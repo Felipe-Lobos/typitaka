@@ -4,7 +4,6 @@ body {
   justify-content: center;
   margin-top: 32px;
   padding: 16px;
-  font-size: 16px;
   font-family: Menlo, monospace;
 }
 main {
@@ -12,13 +11,17 @@ main {
 }
 .paragraph {
   /* filter: blur(3px); */
+  font-size: 1em;
+  line-height: 1em;
+  font-weight: lighter;
   display: flex;
   flex-wrap: wrap;
-  gap: 0px 16px;
+  gap:  0.5em 0.5em;
   font-size: 32px;
   user-select: none;
 }
 .word{
+  position: relative;
   color: gray;
   display: flex;
   &.active{

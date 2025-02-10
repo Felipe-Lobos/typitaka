@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 //import { words as INITIAL_WORDS } from "./data/words";
-import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
+// import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
+import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
 import { BlurOverlay } from "./components/BlurOverlay";
@@ -133,7 +134,7 @@ function App() {
         // Calcula el índice de la letra activa. Si value.length es mayor que la longitud,
         // se selecciona el último índice.
         const activeLetterIndex =
-          value.length < word.letters.length
+          value.length <= word.letters.length
             ? value.length
             : word.letters.length - 1;
 
@@ -345,13 +346,22 @@ function App() {
           className="words-container"
         >
           {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
+          
           <WordsLetterRenderer
+            currentWordIndex={currentWordIndex}
             wordsData={wordsData}
             inputOnBlur={inputOnBlur}
           />
         </div>
         <div className="score-container">
-        <ScoreComponent wordsCount={wordsCount} lettersCount={lettersCount} timeLeft={remainingTime} totalTime={totalTime} />
+          {gameState === "gameover" && (
+            <ScoreComponent
+              wordsCount={wordsCount}
+              lettersCount={lettersCount}
+              timeLeft={remainingTime}
+              totalTime={totalTime}
+            />
+          )}
         </div>
       </main>
     </>

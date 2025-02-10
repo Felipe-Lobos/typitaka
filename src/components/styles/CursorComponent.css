@@ -1,0 +1,14 @@
+.cursor {
+    position: absolute;
+  height: 1em;
+  /* left: calc(0.54em * 46); */
+  width: 0.05em;
+  background-color: lightpink;
+  animation: blink 1.2s 1s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
