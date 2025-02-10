@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
-export function Timer({ totalTime = 60, onTimeEnd, onTick, gameOver }) {
+export function Timer({ totalTime = 60, onTimeEnd, onTick, gameOver,playing }) {
   //onTick: pfunciona Callback para manejar los tick en el componente padre
   //gameOver: boolean
   //onTimeEnd, funcion callback para manejar cuando se acaba el tiempo
@@ -10,6 +10,7 @@ export function Timer({ totalTime = 60, onTimeEnd, onTick, gameOver }) {
   const [timeLeft, SetTimeLeft] = useState(totalTime);
   useEffect(() => {
     if (gameOver) return;
+    if(!playing)return;
     const intervalId = setInterval(() => {
       SetTimeLeft((prevTime) => {
         const newTime = prevTime - 1;
@@ -17,7 +18,7 @@ export function Timer({ totalTime = 60, onTimeEnd, onTick, gameOver }) {
       });
     }, 1000);
     return () => clearInterval(intervalId);
-  }, [ gameOver]);
+  }, [ gameOver,playing]);
 
   useEffect(()=>{
     if (onTick) onTick(timeLeft);

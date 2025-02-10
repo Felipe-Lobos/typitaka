@@ -8,9 +8,10 @@ body {
   font-family: Menlo, monospace;
 }
 main {
-  max-width: 800px;
+  max-width: 80vw;
 }
 .paragraph {
+  /* filter: blur(3px); */
   display: flex;
   flex-wrap: wrap;
   gap: 0px 16px;
@@ -48,4 +49,18 @@ main {
   flex-wrap: wrap;
   font-size: 1.2.rem;
   gap: 20px;
+}
+
+.words-container{
+  position: relative;
+  width: 100%;
+}
+
+.blurry-paragraph{
+  filter: blur(4px);
+}
+.word-input{
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
 }

@@ -2,7 +2,7 @@
 import { WordComponent } from "./WordComponent";
 import { LetterComponent } from "./LetterComponent";
 
-export function WordsLetterRenderer({ wordsData }) {
+export function WordsLetterRenderer({ wordsData, inputOnBlur }) {
   const innerWords = wordsData.map((word, wordIndex) => {
     const innerLetters = word.letters;
     return (
@@ -20,7 +20,7 @@ export function WordsLetterRenderer({ wordsData }) {
     );
   });
 
-  return <div className="paragraph">{innerWords}</div>;
+  return <div className={`paragraph ${inputOnBlur ? 'blurry-paragraph' : ''} `}>{innerWords}</div>;
 }
 
 // return (

@@ -1,0 +1,26 @@
+/* Estilos para el overlay que cubre la zona deseada */
+.blur-overlay {
+    position: absolute; /* o fixed, según el contenedor */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Usamos un fondo más claro o incluso transparente */
+    background: transparent;
+    /* Se sigue aplicando el desenfoque al fondo */
+    /* backdrop-filter: blur(5px); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  /* Estilos para el modal */
+  .overlay-modal {
+    background: transparent; /* Fondo blanco, puedes cambiarlo por otro tono o un gradiente */
+    padding: 2rem;
+    border-radius: 12px;  /* Bordes redondeados */
+    /* Opcional: agregar una transición para suavizar la aparición */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  

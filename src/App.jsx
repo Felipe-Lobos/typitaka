@@ -1,24 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
-import { words as INITIAL_WORDS } from "./data/words";
+//import { words as INITIAL_WORDS } from "./data/words";
+import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
+import { BlurOverlay } from "./components/BlurOverlay";
 
 function App() {
-  const totalTime = 10;
+  const [totalTime, setTotalTime] = useState(15);
   const inputRef = useRef();
   const [cantOfWords, setCantOfWords] = useState(50);
-  const [words, setWords] = useState(
+  const [wordsList, setWordsList] = useState(
     INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, cantOfWords)
   );
-  const [playing, setPlaying] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(totalTime);
+  // const [gameOver, setGameOver] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(15);
   const typedWords = useRef([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const previousCurrentWordIndex = useRef(0);
   const [currentTyping, setCurrentTyping] = useState("");
   const [wordsData, setWordsData] = useState([]);
+  const [inputOnBlur, setIntputOnBlur] = useState(false);
+  const [gameState, setGameState] = useState("not_started"); //'playing','paused','gameover'
+
+  const [timerKeyProp, setTimerKeyProp] = useState(0);
   //estructura de datos
   /**
    * [
@@ -32,6 +37,7 @@ function App() {
    * ]
    */
 
+  //ESTO PUEDE SER UN REACT CUSTOM HOOK
   const { wordsCount, lettersCount } = useMemo(() => {
     let wordsCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };
     let lettersCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };
@@ -51,9 +57,9 @@ function App() {
     return { wordsCount: wordsCount, lettersCount: lettersCount };
   }, [wordsData, currentWordIndex]);
 
-  const initializeWordsData = () => {
+  const initializeWordsData = (currentWords) => {
     const newWordsData = [];
-    words.forEach((word) => {
+    currentWords.forEach((word) => {
       newWordsData.push({
         id: word,
         status: "",
@@ -66,20 +72,44 @@ function App() {
     newWordsData[0].status = "active";
     setWordsData(newWordsData);
   };
+  const getNewWordsList = () => {
+    return INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, cantOfWords);
+  };
 
   //se ejecuta al iniciar o detener el juego
   useEffect(() => {
     //setWords(INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, 50))
-    initializeWordsData();
+    initializeWordsData(wordsList);
   }, []);
 
+  useEffect(() => {
+    resetGame();
+  }, [totalTime, cantOfWords]);
   //renderizar todas las palabras y letras de nuevo
 
+  const startGame = () => {
+    setGameState("playing");
+  };
+  const resetGame = () => {
+    console.log("reset");
+    setGameState("not_started");
+    setTimerKeyProp((prevKey) => prevKey + 1);
+    const newWords = getNewWordsList();
+    setWordsList(newWords);
+    initializeWordsData(newWords);
+    inputRef.current.focus();
+    setCurrentTyping("");
+    setCurrentWordIndex(0);
+  };
+
   const handleOnChange = (event) => {
+    if (gameState === "gameover") return;
     const wordLegnth = wordsData[currentWordIndex].id.length;
     inputRef.current.maxLength = wordLegnth;
-    const value = event.target.value;
+    const value = event.target.value.toLowerCase();
     setCurrentTyping(value);
+
+    if (gameState === "not_started") startGame();
 
     setWordsData((prevData) => {
       return prevData.map((word, wordIndex) => {
@@ -128,6 +158,7 @@ function App() {
   };
   //--------------
   const handleOnKeyDown = (event) => {
+    if (gameState === "gameover" || gameState === "not_started") return;
     const { key } = event;
 
     if (key === " ") {
@@ -164,6 +195,7 @@ function App() {
       //setwordData
 
       typedWords.current[currentWordIndex] = currentTyping;
+
       if (currentWordIndex < cantOfWords - 1) {
         setCurrentTyping("");
         setCurrentWordIndex((prevWordIndex) => {
@@ -182,7 +214,7 @@ function App() {
           return prevWordIndex + 1;
         });
       } else {
-        setGameOver(true);
+        setGameState("gameover");
         console.log("finalizar juego ");
       }
     }
@@ -228,9 +260,30 @@ function App() {
   }, []);
   const handleOnTimeEnd = useCallback(() => {
     console.log("GameOver");
-    setGameOver(true);
+    setGameState("gameover");
   }, []);
 
+  const handleOnBlur = () => {
+    setIntputOnBlur(true);
+  };
+  const handleOnFocus = () => {
+    setIntputOnBlur(false);
+  };
+  const handleLostFocusOnCLick = () => {
+    inputRef.current.focus();
+  };
+  const handleResetButton = (event) => {
+    event.preventDefault();
+    resetGame();
+  };
+  const handleSetTimeButton = (event, time) => {
+    event.preventDefault();
+    setTotalTime(time);
+  };
+  const handleSetCantWordsButton = (event, cant) => {
+    event.preventDefault();
+    setCantOfWords(cant);
+  };
   return (
     <>
       <main>
@@ -238,14 +291,22 @@ function App() {
         <div className="timer-wrap">
           <span>Tiempo restante:</span>
           <Timer
+            key={timerKeyProp}
             totalTime={totalTime}
             onTick={handleOnTick}
-            gameOver={gameOver}
+            gameOver={gameState === "gameover"}
+            playing={gameState === "playing"}
             onTimeEnd={handleOnTimeEnd}
           />
         </div>
 
         <input
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          className="word-input"
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
           value={currentTyping}
           onKeyDown={handleOnKeyDown}
           onChange={handleOnChange}
@@ -270,8 +331,25 @@ function App() {
           </span>
         </section>
 
-        <button onClick={() => setPlaying(!playing)}>start</button>
-        <WordsLetterRenderer wordsData={wordsData} />
+        <button onMouseDown={(e) => handleResetButton(e)}>resetGame</button>
+        <button onMouseDown={(e) => handleSetTimeButton(e, 15)}>15</button>
+        <button onMouseDown={(e) => handleSetTimeButton(e, 30)}>30</button>
+        <button onMouseDown={(e) => handleSetTimeButton(e, 45)}>45</button>
+
+        <button onMouseDown={(e) => handleSetCantWordsButton(e, 10)}>10</button>
+        <button onMouseDown={(e) => handleSetCantWordsButton(e, 25)}>25</button>
+        <button onMouseDown={(e) => handleSetCantWordsButton(e, 50)}>50</button>
+
+        <div
+          onMouseDown={(e) => e.preventDefault()}
+          className="words-container"
+        >
+          {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
+          <WordsLetterRenderer
+            wordsData={wordsData}
+            inputOnBlur={inputOnBlur}
+          />
+        </div>
       </main>
     </>
   );
