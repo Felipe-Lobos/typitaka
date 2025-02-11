@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 //import { words as INITIAL_WORDS } from "./data/words";
 // import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
 import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
@@ -287,8 +289,8 @@ function App() {
   };
   return (
     <>
+      <Header />
       <main>
-        <h1>Monkeytype -V2</h1>
         <div className="timer-wrap">
           <span>Tiempo restante:</span>
           <Timer
@@ -315,38 +317,32 @@ function App() {
           ref={inputRef}
           type="text"
         />
-
-        <section className="stadistics">
-          <span>{`p.correctas ${wordsCount.correct}`}</span>
-          <span>{`p.incorrectas ${wordsCount.incorrect}`}</span>
-          <span>{`p.missed ${wordsCount.missed}`}</span>
-          <span>{`l.correctas ${lettersCount.correct}`}</span>
-          <span>{`l.incorrectas ${lettersCount.incorrect}`}</span>
-          <span>{`l.missed ${lettersCount.missed}`}</span>
-          <span>
-            {" "}
-            {`porcentaje de acierto: ${getAccuracy(
-              lettersCount.total,
-              lettersCount.correct
-            )}`}{" "}
-          </span>
-        </section>
-
-        <button onMouseDown={(e) => handleResetButton(e)}>resetGame</button>
-        <button onMouseDown={(e) => handleSetTimeButton(e, 15)}>15</button>
-        <button onMouseDown={(e) => handleSetTimeButton(e, 30)}>30</button>
-        <button onMouseDown={(e) => handleSetTimeButton(e, 45)}>45</button>
-
-        <button onMouseDown={(e) => handleSetCantWordsButton(e, 10)}>10</button>
-        <button onMouseDown={(e) => handleSetCantWordsButton(e, 25)}>25</button>
-        <button onMouseDown={(e) => handleSetCantWordsButton(e, 50)}>50</button>
+        <div className="button-wraper">
+          <button onMouseDown={(e) => handleResetButton(e)}>reset Game</button>
+          <div className="time-buttons">
+            <button onMouseDown={(e) => handleSetTimeButton(e, 15)}>15</button>
+            <button onMouseDown={(e) => handleSetTimeButton(e, 30)}>30</button>
+            <button onMouseDown={(e) => handleSetTimeButton(e, 45)}>45</button>
+          </div>
+          <div className="word-buttons">
+            <button onMouseDown={(e) => handleSetCantWordsButton(e, 10)}>
+              10
+            </button>
+            <button onMouseDown={(e) => handleSetCantWordsButton(e, 25)}>
+              25
+            </button>
+            <button onMouseDown={(e) => handleSetCantWordsButton(e, 50)}>
+              50
+            </button>
+          </div>
+        </div>
 
         <div
           onMouseDown={(e) => e.preventDefault()}
           className="words-container"
         >
           {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
-          
+
           <WordsLetterRenderer
             currentWordIndex={currentWordIndex}
             wordsData={wordsData}
@@ -364,6 +360,7 @@ function App() {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }
