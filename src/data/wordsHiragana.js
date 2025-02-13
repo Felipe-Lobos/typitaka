@@ -1,4 +1,4 @@
-export const palabrasBasicasHiraganaObjetos = [
+const words = [
     { hiragana: "おはよう", romaji: "ohayou", translation: "Buenos días" },
     { hiragana: "こんにちは", romaji: "konnichiwa", translation: "Hola / Buenos días (tarde)" },
     { hiragana: "こんばんは", romaji: "konbanwa", translation: "Buenas noches" },
@@ -103,3 +103,4 @@ export const palabrasBasicasHiraganaObjetos = [
     { hiragana: "きゅう", romaji: "kyuu", translation: "Nueve" },
     { hiragana: "じゅう", romaji: "juu", translation: "Diez" }
   ];
+export default words;

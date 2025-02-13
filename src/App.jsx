@@ -3,7 +3,7 @@ import "./App.css";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 //import { words as INITIAL_WORDS } from "./data/words";
-import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
+import { default as INITIAL_WORDS } from "./data/wordsRomaji";
 // import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
@@ -99,7 +99,6 @@ function App() {
     setGameState("playing");
   };
   const resetGame = () => {
-    console.log("reset");
     setGameState("not_started");
     setTimerKeyProp((prevKey) => prevKey + 1);
     const newWords = getNewWordsList();
@@ -154,6 +153,9 @@ function App() {
             (letter) => letter.status === "correct"
           );
           newWordStatus = allCorrect ? "correct" : "incorrect";
+        }
+        if (newWordStatus === "correct" && wordIndex === cantOfWords - 1) {
+          setGameState("gameover");
         }
         return {
           ...word,
@@ -254,7 +256,6 @@ function App() {
   };
 
   const handleOnTick = useCallback((timeLeft) => {
-    console.log("🚀 ~ handleOnTick ~ timeLeft:", timeLeft);
     setRemainingTime(timeLeft);
   }, []);
   const handleOnTimeEnd = useCallback(() => {

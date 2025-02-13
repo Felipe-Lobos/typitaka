@@ -1,4 +1,4 @@
-export const palabrasBasicasRomajiSinSimbolos = [
+const words = [
   "ohayou",
   "konnichiwa",
   "konbanwa",
@@ -12,7 +12,6 @@ export const palabrasBasicasRomajiSinSimbolos = [
   "sayounara",
   "matane",
   "oyasumi",
-  "ogenki desuka",
   "okagesamade",
   "kochirakoso",
   "sensei",
@@ -94,3 +93,4 @@ export const palabrasBasicasRomajiSinSimbolos = [
   "kyuu",
   "juu",
 ];
+export default words;
