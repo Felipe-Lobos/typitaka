@@ -3,12 +3,16 @@ import "./App.css";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 //import { words as INITIAL_WORDS } from "./data/words";
-// import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
-import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
+import { palabrasBasicasRomajiSinSimbolos as INITIAL_WORDS } from "./data/wordsRomaji";
+// import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
 import { BlurOverlay } from "./components/BlurOverlay";
 import { ScoreComponent } from "./components/ScoreComponent";
+import { RiResetLeftLine } from "react-icons/ri";
+import { PiTimerLight } from "react-icons/pi";
+import { CiTextAlignLeft } from "react-icons/ci";
+import { GameModesOptions } from "./components/GameModesOptions";
 
 function App() {
   const [totalTime, setTotalTime] = useState(15);
@@ -249,14 +253,6 @@ function App() {
     }
   };
 
-  const getAccuracy = (totalLettersTyped, correctLettersCount) => {
-    if (!totalLettersTyped || !correctLettersCount) return 0;
-    const accuracy = ((correctLettersCount / totalLettersTyped) * 100).toFixed(
-      0
-    );
-    return accuracy;
-  };
-
   const handleOnTick = useCallback((timeLeft) => {
     console.log("🚀 ~ handleOnTick ~ timeLeft:", timeLeft);
     setRemainingTime(timeLeft);
@@ -291,18 +287,6 @@ function App() {
     <>
       <Header />
       <main>
-        <div className="timer-wrap">
-          <span>Tiempo restante:</span>
-          <Timer
-            key={timerKeyProp}
-            totalTime={totalTime}
-            onTick={handleOnTick}
-            gameOver={gameState === "gameover"}
-            playing={gameState === "playing"}
-            onTimeEnd={handleOnTimeEnd}
-          />
-        </div>
-
         <input
           autoCapitalize="off"
           autoComplete="off"
@@ -317,37 +301,51 @@ function App() {
           ref={inputRef}
           type="text"
         />
-        <div className="button-wraper">
-          <button onMouseDown={(e) => handleResetButton(e)}>reset Game</button>
-          <div className="time-buttons">
-            <button onMouseDown={(e) => handleSetTimeButton(e, 15)}>15</button>
-            <button onMouseDown={(e) => handleSetTimeButton(e, 30)}>30</button>
-            <button onMouseDown={(e) => handleSetTimeButton(e, 45)}>45</button>
-          </div>
-          <div className="word-buttons">
-            <button onMouseDown={(e) => handleSetCantWordsButton(e, 10)}>
-              10
-            </button>
-            <button onMouseDown={(e) => handleSetCantWordsButton(e, 25)}>
-              25
-            </button>
-            <button onMouseDown={(e) => handleSetCantWordsButton(e, 50)}>
-              50
-            </button>
-          </div>
-        </div>
+        <GameModesOptions
+          handleTimeButton={handleSetTimeButton}
+          HandleWordsButton={handleSetCantWordsButton}
+        />
 
         <div
           onMouseDown={(e) => e.preventDefault()}
           className="words-container"
         >
-          {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
+          <div className="option-display">
+            <div className="timer-option-display">
+              <PiTimerLight />
+              <Timer
+                key={timerKeyProp}
+                totalTime={totalTime}
+                onTick={handleOnTick}
+                gameOver={gameState === "gameover"}
+                playing={gameState === "playing"}
+                onTimeEnd={handleOnTimeEnd}
+              />
+              <span>s</span>
+            </div>
 
-          <WordsLetterRenderer
-            currentWordIndex={currentWordIndex}
-            wordsData={wordsData}
-            inputOnBlur={inputOnBlur}
-          />
+            <div className="word-option-display">
+              <CiTextAlignLeft />
+              <span>{cantOfWords - currentWordIndex}</span>
+            </div>
+          </div>
+          {gameState !== "gameover" && (
+            <>
+              {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
+              <WordsLetterRenderer
+                currentWordIndex={currentWordIndex}
+                wordsData={wordsData}
+                inputOnBlur={inputOnBlur}
+              />
+            </>
+          )}
+
+          <button
+            className="reset-button"
+            onMouseDown={(e) => handleResetButton(e)}
+          >
+            <RiResetLeftLine />
+          </button>
         </div>
         <div className="score-container">
           {gameState === "gameover" && (

@@ -24,20 +24,3 @@ export function WordsLetterRenderer({ wordsData, inputOnBlur, currentWordIndex }
   return <div className={`paragraph ${inputOnBlur ? 'blurry-paragraph' : ''} `}>{innerWords}</div>;
 }
 
-// return (
-//   <div
-//     className={`word ${word.status ? word.status : ""}`}
-//     key={`${word.id}${wordIndex}`}
-//   >
-//     {innerLetters.map((letter, letterIndex) => {
-//       return (
-//         <span
-//           className={`letter ${letter.status ? letter.status : ""}`}
-//           key={`${word.id}${wordIndex}-${letter.char}${letterIndex}`}
-//         >
-//           {letter.char}
-//         </span>
-//       );
-//     })}
-//   </div>
-// );

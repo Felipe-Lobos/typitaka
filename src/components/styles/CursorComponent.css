@@ -4,11 +4,12 @@
   /* left: calc(0.54em * 46); */
   width: 0.05em;
   background-color: lightpink;
-  animation: blink 1.2s 1s infinite;
+  animation: blink 1.3s  infinite;
+  transition: left 0.09s ease;
 }
 
 @keyframes blink {
   50% {
-    opacity: 0;
+    opacity: .1;
   }
 }
