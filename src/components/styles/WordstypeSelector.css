@@ -1,0 +1,9 @@
+.words-type-selector{
+    display: flex;
+    gap: 20px;
+}
+
+.words-type-selector button{
+    cursor: pointer;
+    
+}

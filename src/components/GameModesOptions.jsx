@@ -1,20 +1,29 @@
 /* eslint-disable react/prop-types */
 import './styles/GameModesOptions.css'
-export function GameModesOptions({handleTimeButton,HandleWordsButton}) {
+export function GameModesOptions({gameMode,updateGameOption}) {
   return (
     <div className="game-options">
-      <div className="time-options">
+      <div className='mode-selector'>
+      <button onMouseDown={(e) => updateGameOption(e,{prop:'mode',value:'words'})} className="option-button">Words</button>
+      <button onMouseDown={(e) => updateGameOption(e,{prop:'mode',value:'time'})} className="option-button">Time</button>
+
+
+      </div>
+      {gameMode === 'time' &&
+       (<div className="time-options">
         <span>Time</span>
-        <button onMouseDown={(e) => handleTimeButton(e, 15)} className="time-button">15</button>
-        <button onMouseDown={(e) => handleTimeButton(e, 30)} className="time-button">30</button>
-        <button onMouseDown={(e) => handleTimeButton(e, 60)} className="time-button">60</button>
-      </div>
-      <div className="words-options">
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'time',value:15})}  className="option-button">15</button>
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'time',value:30})} className="option-button">30</button>
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'time',value:60})} className="option-button">60</button>
+      </div>) }
+
+      {gameMode ==='words' && (<div className="words-options">
         <span>№ Words</span>
-        <button onMouseDown={(e) => HandleWordsButton(e, 10)} className="words-button">10</button>
-        <button onMouseDown={(e) => HandleWordsButton(e, 25)} className="words-button">25</button>
-        <button onMouseDown={(e) => HandleWordsButton(e, 50)}  className="words-button">50</button>
-      </div>
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'words',value:10})}  className="option-button">10</button>
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'words',value:25})}  className="option-button">25</button>
+        <button onMouseDown={(e) => updateGameOption(e,{prop:'words',value:50})}  className="option-button">50</button>
+      </div>)}
+      
     </div>
   );
 }

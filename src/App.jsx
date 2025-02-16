@@ -3,26 +3,31 @@ import "./App.css";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 //import { words as INITIAL_WORDS } from "./data/words";
-import { default as INITIAL_WORDS } from "./data/wordsRomaji";
-// import { palabrasBasicasEspanolSinSimbolos as INITIAL_WORDS } from "./data/wordsSpanish";
 import { Timer } from "./components/Timer";
 import { WordsLetterRenderer } from "./components/WordsLetterRenderer";
 import { BlurOverlay } from "./components/BlurOverlay";
 import { ScoreComponent } from "./components/ScoreComponent";
 import { RiResetLeftLine } from "react-icons/ri";
 import { PiTimerLight } from "react-icons/pi";
-import { CiTextAlignLeft } from "react-icons/ci";
+import { RxTextNone } from "react-icons/rx";
+
 import { GameModesOptions } from "./components/GameModesOptions";
+import { WordsTypeSelector } from "./components/WordsTypeSelector";
 
 function App() {
-  const [totalTime, setTotalTime] = useState(15);
+  const INITIAL_WORDS = ["loading", "..."];
+  const DEFAULT_GAMEOPTIONS = {
+    mode: "words",
+    words: 10,
+    time: 15,
+    theme: "",
+    wordsType: "words", //words,wordsHard,wordsSpanish,wordsRomaji
+  };
+  const [gameOptions, setGameOptions] = useState(DEFAULT_GAMEOPTIONS);
   const inputRef = useRef();
-  const [cantOfWords, setCantOfWords] = useState(50);
-  const [wordsList, setWordsList] = useState(
-    INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, cantOfWords)
-  );
-  // const [gameOver, setGameOver] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(15);
+  const [importedWords, setImportedWords] = useState([]);
+  const [wordsList, setWordsList] = useState([]);
+  const [remainingTime, setRemainingTime] = useState(gameOptions.time);
   const typedWords = useRef([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const previousCurrentWordIndex = useRef(0);
@@ -30,6 +35,7 @@ function App() {
   const [wordsData, setWordsData] = useState([]);
   const [inputOnBlur, setIntputOnBlur] = useState(false);
   const [gameState, setGameState] = useState("not_started"); //'playing','paused','gameover'
+  const initialGameOptionsLoaded = useRef(false);
 
   const [timerKeyProp, setTimerKeyProp] = useState(0);
   //estructura de datos
@@ -65,6 +71,41 @@ function App() {
     return { wordsCount: wordsCount, lettersCount: lettersCount };
   }, [wordsData, currentWordIndex]);
 
+  const loadWordsType = async (wordsTypeName) => {
+    try {
+      const module = await import(`./wordsTypes/${wordsTypeName}.js`);
+      return module.default;
+    } catch (error) {
+      console.error("Error al cargar modulo : ", wordsTypeName, error);
+      return [];
+    }
+  };
+
+  const intializeGame = () => {
+    const storedGameOptionsString = localStorage.getItem("gameOptions");
+    const localGameOptions = storedGameOptionsString
+      ? JSON.parse(storedGameOptionsString) ?? DEFAULT_GAMEOPTIONS // Usa ?? para valor por defecto si JSON.parse retorna null
+      : DEFAULT_GAMEOPTIONS;
+
+    if (localGameOptions !== gameOptions) {
+      console.log("update game options");
+      setGameOptions({
+        mode: localGameOptions.mode,
+        words: localGameOptions.words,
+        time: localGameOptions.time,
+        theme: localGameOptions.theme,
+        wordsType: localGameOptions.wordsType,
+      });
+    }
+    loadWordsType(localGameOptions.wordsType)
+      .then((newImportedWords) => {
+        setImportedWords(newImportedWords);
+      })
+      .catch((error) => {
+        console.error("Error al cargar la lista:", error);
+      });
+  };
+
   const initializeWordsData = (currentWords) => {
     const newWordsData = [];
     currentWords.forEach((word) => {
@@ -80,25 +121,73 @@ function App() {
     newWordsData[0].status = "active";
     setWordsData(newWordsData);
   };
+
   const getNewWordsList = () => {
-    return INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, cantOfWords);
+    if (importedWords.length === 0) return INITIAL_WORDS;
+    const wordsToUse = [...importedWords];
+    const numOfWords =
+      wordsToUse.length < gameOptions.words
+        ? wordsToUse.length - 1
+        : gameOptions.words;
+    // setGameOptions(prev=>({...prev,words:numOfWords}))
+    return wordsToUse.sort(() => Math.random() - 0.5).slice(0, numOfWords);
   };
 
   //se ejecuta al iniciar o detener el juego
   useEffect(() => {
-    //setWords(INITIAL_WORDS.sort(() => Math.random() - 0.5).slice(0, 50))
-    initializeWordsData(wordsList);
+    intializeGame();
   }, []);
 
   useEffect(() => {
+    if (wordsList.length !== 0) {
+      initializeWordsData(wordsList);
+    }
+  }, [wordsList]);
+
+  useEffect(() => {
+    console.log("change words type", gameOptions.wordsType);
+    loadWordsType(gameOptions.wordsType)
+      .then((newImportedWords) => {
+        if(newImportedWords !== importedWords)setImportedWords(newImportedWords);
+      })
+      .catch((error) => {
+        console.error("Error al cargar la lista:", error);
+      });
+  }, [gameOptions]);
+
+  useEffect(() => {
+    // Solo ejecutar si gameOptions ya se cargó
+    console.log("🚀 ~ useEffect ~ importedWords:", importedWords);
+    if (gameOptions === DEFAULT_GAMEOPTIONS) return;
+
+    // Si es el montaje inicial, marcamos y salimos sin resetear
+    if (!initialGameOptionsLoaded.current) {
+      initialGameOptionsLoaded.current = true;
+      // Guarda el valor inicial en localStorage
+      localStorage.setItem("gameOptions", JSON.stringify(gameOptions));
+      return;
+    }
+
+    // Aquí se ejecuta cuando gameOptions cambia (después del montaje inicial)
     resetGame();
-  }, [totalTime, cantOfWords]);
+    localStorage.setItem("gameOptions", JSON.stringify(gameOptions));
+    console.log("Game reset with new options:", gameOptions);
+    // localStorage.removeItem('gameOptions');
+  }, [gameOptions]);
   //renderizar todas las palabras y letras de nuevo
 
+  //reaload WordsList
+  useEffect(()=>{
+    if(importedWords.length === 0)return;
+    const newWords = getNewWordsList();
+    setWordsList(newWords);
+  },[importedWords])
   const startGame = () => {
     setGameState("playing");
   };
+  //RESETGAME DEBE SER UN CUSTOMHOOK PARA QUE NO HAYA PROBLEMAS CON LOS RENDEREIZADOS
   const resetGame = () => {
+    console.log("reset");
     setGameState("not_started");
     setTimerKeyProp((prevKey) => prevKey + 1);
     const newWords = getNewWordsList();
@@ -154,7 +243,7 @@ function App() {
           );
           newWordStatus = allCorrect ? "correct" : "incorrect";
         }
-        if (newWordStatus === "correct" && wordIndex === cantOfWords - 1) {
+        if (newWordStatus === "correct" && wordIndex === wordsData.length - 1) {
           setGameState("gameover");
         }
         return {
@@ -206,7 +295,7 @@ function App() {
 
       typedWords.current[currentWordIndex] = currentTyping;
 
-      if (currentWordIndex < cantOfWords - 1) {
+      if (currentWordIndex < wordsData.length - 1) {
         setCurrentTyping("");
         setCurrentWordIndex((prevWordIndex) => {
           previousCurrentWordIndex.current = prevWordIndex;
@@ -276,14 +365,30 @@ function App() {
     event.preventDefault();
     resetGame();
   };
-  const handleSetTimeButton = (event, time) => {
+
+  const handleUpdateGameOptions = (event, payload) => {
     event.preventDefault();
-    setTotalTime(time);
+    //SEPARAR ESTO EN UNA FUNCION APARTE UPDATEGAMEOPTIONS() PARA REUTILIZARLA
+    const { prop, value } = payload;
+    setGameOptions((prev) => {
+      const newGameOptions = { ...prev };
+      newGameOptions[prop] = value;
+      if (prop === "mode" && value === "time") {
+        newGameOptions.words = 1000;
+        newGameOptions.time = 15;
+      }
+      if (prop === "mode" && value === "words") {
+        newGameOptions.time = 1000;
+        newGameOptions.words = 10;
+      }
+      return newGameOptions;
+    });
   };
-  const handleSetCantWordsButton = (event, cant) => {
-    event.preventDefault();
-    setCantOfWords(cant);
+
+  const updateImportedWords = (newWordsType) => {
+    setGameOptions((prev) => ({ ...prev, wordsType: newWordsType }));
   };
+
   return (
     <>
       <Header />
@@ -303,33 +408,46 @@ function App() {
           type="text"
         />
         <GameModesOptions
-          handleTimeButton={handleSetTimeButton}
-          HandleWordsButton={handleSetCantWordsButton}
+          gameMode={gameOptions.mode}
+          updateGameOption={handleUpdateGameOptions}
         />
 
         <div
           onMouseDown={(e) => e.preventDefault()}
           className="words-container"
         >
-          <div className="option-display">
-            <div className="timer-option-display">
-              <PiTimerLight />
-              <Timer
-                key={timerKeyProp}
-                totalTime={totalTime}
-                onTick={handleOnTick}
-                gameOver={gameState === "gameover"}
-                playing={gameState === "playing"}
-                onTimeEnd={handleOnTimeEnd}
-              />
-              <span>s</span>
-            </div>
+          <WordsTypeSelector updateImportedWords={updateImportedWords} />
 
-            <div className="word-option-display">
-              <CiTextAlignLeft />
-              <span>{cantOfWords - currentWordIndex}</span>
+          {gameState !== "gameover" && (
+            <div className="option-display">
+              <div
+                className={`timer-option-display ${
+                  gameOptions.mode !== "time" ? "option-hidden" : ""
+                }`}
+              >
+                <PiTimerLight />
+                <Timer
+                  key={timerKeyProp}
+                  totalTime={gameOptions.time}
+                  onTick={handleOnTick}
+                  gameOver={gameState === "gameover"}
+                  playing={gameState === "playing"}
+                  onTimeEnd={handleOnTimeEnd}
+                />
+                <span>s</span>
+              </div>
+
+              <div
+                className={`word-option-display ${
+                  gameOptions.mode !== "words" ? "option-hidden" : ""
+                }`}
+              >
+                <RxTextNone />
+                <span>{wordsData.length - currentWordIndex}</span>
+              </div>
             </div>
-          </div>
+          )}
+
           {gameState !== "gameover" && (
             <>
               {inputOnBlur && <BlurOverlay onClick={handleLostFocusOnCLick} />}
@@ -354,7 +472,7 @@ function App() {
               wordsCount={wordsCount}
               lettersCount={lettersCount}
               timeLeft={remainingTime}
-              totalTime={totalTime}
+              totalTime={gameOptions.time}
             />
           )}
         </div>

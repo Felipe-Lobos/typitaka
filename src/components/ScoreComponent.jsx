@@ -9,8 +9,8 @@ export function ScoreComponent({
 }) {
   const elapsedTime = totalTime - timeLeft;
   //WordsPerMinute, LetterPerMinute
-  const wpm = elapsedTime ? (wordsCount.correct / elapsedTime).toFixed(0) * 60 : 0;
-  const lpm = elapsedTime ? (lettersCount.correct / elapsedTime).toFixed(0) * 60 : 0;
+  const wpm = elapsedTime ? ((wordsCount.correct / elapsedTime)* 60).toFixed(0)  : 0;
+  const lpm = elapsedTime ? ((lettersCount.correct / elapsedTime) * 60).toFixed(0) : 0;
   const getAccuracy = (totalLettersTyped, correctLettersCount) => {
     if (!totalLettersTyped || !correctLettersCount) return 0;
     const newAccuracy = (

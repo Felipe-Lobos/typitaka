@@ -117,3 +117,6 @@ main{
     align-items: center;
   }
 }
+.option-hidden{
+  visibility: hidden;
+}

@@ -103,4 +103,4 @@ const words = [
     { hiragana: "きゅう", romaji: "kyuu", translation: "Nueve" },
     { hiragana: "じゅう", romaji: "juu", translation: "Diez" }
   ];
-export default words;
+export default words.map(hira=>hira.hiragana);
