@@ -101,7 +101,7 @@ main{
   width: 100%;
   flex-grow: 1;
   /* margin-top: auto; */
-
+  margin-bottom: 15vh;
 }
 
 .reset-button{
