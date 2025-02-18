@@ -6,8 +6,6 @@ export function GameModesOptions({gameMode,updateGameOption}) {
       <div className='mode-selector'>
       <button onMouseDown={(e) => updateGameOption(e,{prop:'mode',value:'words'})} className="option-button">Words</button>
       <button onMouseDown={(e) => updateGameOption(e,{prop:'mode',value:'time'})} className="option-button">Time</button>
-
-
       </div>
       {gameMode === 'time' &&
        (<div className="time-options">

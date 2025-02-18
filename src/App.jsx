@@ -13,9 +13,10 @@ import { RxTextNone } from "react-icons/rx";
 
 import { GameModesOptions } from "./components/GameModesOptions";
 import { WordsTypeSelector } from "./components/WordsTypeSelector";
+import { GameOptionsComponent } from "./components/GameOptionsComponent";
 
 function App() {
-  const INITIAL_WORDS = ["loading", "..."];
+  const INITIAL_WORDS = ["Something", "wrong", "press", "reset", "..."];
   const DEFAULT_GAMEOPTIONS = {
     mode: "words",
     words: 10,
@@ -35,8 +36,8 @@ function App() {
   const [wordsData, setWordsData] = useState([]);
   const [inputOnBlur, setIntputOnBlur] = useState(false);
   const [gameState, setGameState] = useState("not_started"); //'playing','paused','gameover'
-  const initialGameOptionsLoaded = useRef(false);
-
+  // const initialGameOptionsLoaded = useRef(false);
+  const previousGameOptions = useRef(gameOptions);
   const [timerKeyProp, setTimerKeyProp] = useState(0);
   //estructura de datos
   /**
@@ -89,17 +90,24 @@ function App() {
 
     if (localGameOptions !== gameOptions) {
       console.log("update game options");
-      setGameOptions({
-        mode: localGameOptions.mode,
-        words: localGameOptions.words,
-        time: localGameOptions.time,
-        theme: localGameOptions.theme,
-        wordsType: localGameOptions.wordsType,
+      setGameOptions((prev) => {
+        previousGameOptions.current = prev;
+        return {
+          mode: localGameOptions.mode,
+          words: localGameOptions.words,
+          time: localGameOptions.time,
+          theme: localGameOptions.theme,
+          wordsType: localGameOptions.wordsType,
+        };
       });
+    } else {
+      console.log("opciones cargadas son iguales a las opciones en sistema");
     }
     loadWordsType(localGameOptions.wordsType)
       .then((newImportedWords) => {
-        setImportedWords(newImportedWords);
+        setImportedWords(() => {
+          return newImportedWords;
+        });
       })
       .catch((error) => {
         console.error("Error al cargar la lista:", error);
@@ -139,36 +147,28 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (wordsList.length !== 0) {
-      initializeWordsData(wordsList);
-    }
+    if (wordsList.length === 0) return;
+    initializeWordsData(wordsList);
+    console.log("🚀 ~ useEffect ~ wordsList:", wordsList);
   }, [wordsList]);
 
   useEffect(() => {
     console.log("change words type", gameOptions.wordsType);
     loadWordsType(gameOptions.wordsType)
       .then((newImportedWords) => {
-        if(newImportedWords !== importedWords)setImportedWords(newImportedWords);
+        if (newImportedWords !== importedWords)
+          setImportedWords(newImportedWords);
       })
       .catch((error) => {
         console.error("Error al cargar la lista:", error);
       });
-  }, [gameOptions]);
+  }, [gameOptions.wordsType]);
 
   useEffect(() => {
     // Solo ejecutar si gameOptions ya se cargó
-    console.log("🚀 ~ useEffect ~ importedWords:", importedWords);
     if (gameOptions === DEFAULT_GAMEOPTIONS) return;
-
-    // Si es el montaje inicial, marcamos y salimos sin resetear
-    if (!initialGameOptionsLoaded.current) {
-      initialGameOptionsLoaded.current = true;
-      // Guarda el valor inicial en localStorage
-      localStorage.setItem("gameOptions", JSON.stringify(gameOptions));
-      return;
-    }
-
-    // Aquí se ejecuta cuando gameOptions cambia (después del montaje inicial)
+    if (gameOptions.wordsType !== previousGameOptions.current.wordsType) return;
+    console.log("imported words on useEffect gameOptions", importedWords[0]);
     resetGame();
     localStorage.setItem("gameOptions", JSON.stringify(gameOptions));
     console.log("Game reset with new options:", gameOptions);
@@ -177,11 +177,16 @@ function App() {
   //renderizar todas las palabras y letras de nuevo
 
   //reaload WordsList
-  useEffect(()=>{
-    if(importedWords.length === 0)return;
+  useEffect(() => {
+    console.log(
+      "importedWords changed, getting new WordList: ",
+      importedWords[0]
+    );
+    if (importedWords.length === 0) return;
     const newWords = getNewWordsList();
     setWordsList(newWords);
-  },[importedWords])
+  }, [importedWords]);
+
   const startGame = () => {
     setGameState("playing");
   };
@@ -371,6 +376,7 @@ function App() {
     //SEPARAR ESTO EN UNA FUNCION APARTE UPDATEGAMEOPTIONS() PARA REUTILIZARLA
     const { prop, value } = payload;
     setGameOptions((prev) => {
+      previousGameOptions.current = prev;
       const newGameOptions = { ...prev };
       newGameOptions[prop] = value;
       if (prop === "mode" && value === "time") {
@@ -386,12 +392,21 @@ function App() {
   };
 
   const updateImportedWords = (newWordsType) => {
-    setGameOptions((prev) => ({ ...prev, wordsType: newWordsType }));
+    setGameOptions((prev) => {
+      previousGameOptions.current = prev;
+      return { ...prev, wordsType: newWordsType };
+    });
   };
 
   return (
     <>
       <Header />
+      <section className="option-section">
+        <GameOptionsComponent
+          selectedOptions={gameOptions}
+          updateGameOption={handleUpdateGameOptions}
+        />
+      </section>
       <main>
         <input
           autoCapitalize="off"
@@ -407,16 +422,16 @@ function App() {
           ref={inputRef}
           type="text"
         />
-        <GameModesOptions
+        {/* <GameModesOptions
           gameMode={gameOptions.mode}
           updateGameOption={handleUpdateGameOptions}
-        />
+        /> */}
 
         <div
           onMouseDown={(e) => e.preventDefault()}
           className="words-container"
         >
-          <WordsTypeSelector updateImportedWords={updateImportedWords} />
+          {/* <WordsTypeSelector updateImportedWords={updateImportedWords} /> */}
 
           {gameState !== "gameover" && (
             <div className="option-display">

@@ -16,14 +16,22 @@ body {
 
 .paragraph {
   /* filter: blur(3px); */
-  font-size: 1em;
-  line-height: 1em;
-  font-weight: lighter;
+  font-size: 32px;
+  /* font-size: 2em; */
+ 
+  
+  
+  user-select: none;
+  height: 128px;
+  overflow: hidden;
+}
+.words-wrapper{
   display: flex;
   flex-wrap: wrap;
-  gap:  0.5em 0.5em;
-  font-size: 32px;
-  user-select: none;
+  justify-content: space-between;
+  gap:  1rem 1rem;
+  line-height: 2rem;
+  font-weight: lighter;
 }
 .word{
   position: relative;
@@ -85,7 +93,7 @@ body {
 main{
   display: flex;
   flex-direction: column;
-  /* justify-content: start; */
+  justify-content: center;
   align-items: center;
   width: 100%;
   flex-grow: 1;
@@ -111,7 +119,7 @@ main{
   display: flex;
   align-items: center;
   font-size: 2rem;
-  justify-content: space-around;
+  justify-content: center;
   & > div{
     display: flex;
     align-items: center;
@@ -119,4 +127,9 @@ main{
 }
 .option-hidden{
   visibility: hidden;
+  position: fixed;
+}
+
+.option-section{
+ width: 100%;
 }
