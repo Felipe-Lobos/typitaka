@@ -21,9 +21,6 @@ body {
   /* filter: blur(3px); */
   font-size: 32px;
   /* font-size: 2em; */
- 
-  
-  
   user-select: none;
   height: 128px;
   overflow: hidden;
@@ -31,7 +28,7 @@ body {
 .words-wrapper{
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: start;
   gap:  1rem 1rem;
   line-height: 2rem;
   font-weight: lighter;

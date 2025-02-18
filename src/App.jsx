@@ -265,63 +265,62 @@ function App() {
     if (gameState === "gameover" || gameState === "not_started") return;
     const { key } = event;
 
-    if (key === " ") {
-      event.preventDefault();
-      //setwordData
-      setWordsData((prevWordsData) =>
-        prevWordsData.map((word, wIndex) => {
-          // Actualizamos solo la palabra activa, usando el índice global activeWordIndex
-          if (wIndex !== currentWordIndex) return word;
+    // if (key === " ") {
+    //   event.preventDefault();
+    //   //setwordData
+    //   setWordsData((prevWordsData) =>
+    //     prevWordsData.map((word, wIndex) => {
+    //       // Actualizamos solo la palabra activa, usando el índice global activeWordIndex
+    //       if (wIndex !== currentWordIndex) return word;
+    //       // Si el valor tipeado es menor que la longitud de la palabra,
+    //       // marcamos la palabra y las letras no ingresadas como "missed"
+    //       if (currentTyping.length < word.letters.length) {
+    //         const updatedLetters = word.letters.map((letter, lIndex) => {
+    //           if (lIndex < currentTyping.length) {
+    //             // La letra ya fue validada en tiempo real (puede ser correct o incorrect)
+    //             return letter;
+    //           } else {
+    //             // Las letras restantes se marcan como "missed"
+    //             return { ...letter, status: "missed" };
+    //           }
+    //         });
+    //         return {
+    //           ...word,
+    //           status: "missed",
+    //           activeLetterIndex: currentTyping.length, // o el índice de la última letra tipeada
+    //           letters: updatedLetters,
+    //         };
+    //       }
+    //       // Si el usuario completó la palabra, se manejará en otra lógica
+    //       return word;
+    //     })
+    //   );
+    //   //setwordData
 
-          // Si el valor tipeado es menor que la longitud de la palabra,
-          // marcamos la palabra y las letras no ingresadas como "missed"
-          if (currentTyping.length < word.letters.length) {
-            const updatedLetters = word.letters.map((letter, lIndex) => {
-              if (lIndex < currentTyping.length) {
-                // La letra ya fue validada en tiempo real (puede ser correct o incorrect)
-                return letter;
-              } else {
-                // Las letras restantes se marcan como "missed"
-                return { ...letter, status: "missed" };
-              }
-            });
-            return {
-              ...word,
-              status: "missed",
-              activeLetterIndex: currentTyping.length, // o el índice de la última letra tipeada
-              letters: updatedLetters,
-            };
-          }
-          // Si el usuario completó la palabra, se manejará en otra lógica
-          return word;
-        })
-      );
-      //setwordData
+    //   typedWords.current[currentWordIndex] = currentTyping;
 
-      typedWords.current[currentWordIndex] = currentTyping;
+    //   if (currentWordIndex < wordsData.length - 1) {
+    //     setCurrentTyping("");
+    //     setCurrentWordIndex((prevWordIndex) => {
+    //       previousCurrentWordIndex.current = prevWordIndex;
 
-      if (currentWordIndex < wordsData.length - 1) {
-        setCurrentTyping("");
-        setCurrentWordIndex((prevWordIndex) => {
-          previousCurrentWordIndex.current = prevWordIndex;
+    //       //UPDATEACTIVEWORDDATA(CURRENTINDEX, NEWINDEX)
+    //       setWordsData((prevWordsData) => {
+    //         const newWordsData = [...prevWordsData];
+    //         newWordsData[prevWordIndex + 1] = {
+    //           ...newWordsData[prevWordIndex + 1],
+    //           status: "active",
+    //         };
+    //         return newWordsData;
+    //       });
 
-          //UPDATEACTIVEWORDDATA(CURRENTINDEX, NEWINDEX)
-          setWordsData((prevWordsData) => {
-            const newWordsData = [...prevWordsData];
-            newWordsData[prevWordIndex + 1] = {
-              ...newWordsData[prevWordIndex + 1],
-              status: "active",
-            };
-            return newWordsData;
-          });
-
-          return prevWordIndex + 1;
-        });
-      } else {
-        setGameState("gameover");
-        console.log("finalizar juego ");
-      }
-    }
+    //       return prevWordIndex + 1;
+    //     });
+    //   } else {
+    //     setGameState("gameover");
+    //     console.log("finalizar juego ");
+    //   }
+    // }
     if (key === "Backspace") {
       if (currentTyping === "" && currentWordIndex > 0) {
         setCurrentWordIndex((prevWordIndex) => {
@@ -398,6 +397,70 @@ function App() {
     });
   };
 
+  const handleBeforeInput = (event)=>{
+    
+    if (gameState === "gameover" || gameState === "not_started") return;
+    const { data } = event;
+    console.log("🚀 ~ handleBeforeInput ~ data:", data)
+    
+    if (data === " ") {
+      event.preventDefault();
+      //setwordData
+      setWordsData((prevWordsData) =>
+        prevWordsData.map((word, wIndex) => {
+          // Actualizamos solo la palabra activa, usando el índice global activeWordIndex
+          if (wIndex !== currentWordIndex) return word;
+          // Si el valor tipeado es menor que la longitud de la palabra,
+          // marcamos la palabra y las letras no ingresadas como "missed"
+          if (currentTyping.length < word.letters.length) {
+            const updatedLetters = word.letters.map((letter, lIndex) => {
+              if (lIndex < currentTyping.length) {
+                // La letra ya fue validada en tiempo real (puede ser correct o incorrect)
+                return letter;
+              } else {
+                // Las letras restantes se marcan como "missed"
+                return { ...letter, status: "missed" };
+              }
+            });
+            return {
+              ...word,
+              status: "missed",
+              activeLetterIndex: currentTyping.length, // o el índice de la última letra tipeada
+              letters: updatedLetters,
+            };
+          }
+          // Si el usuario completó la palabra, se manejará en otra lógica
+          return word;
+        })
+      );
+      //setwordData
+
+      typedWords.current[currentWordIndex] = currentTyping;
+
+      if (currentWordIndex < wordsData.length - 1) {
+        setCurrentTyping("");
+        setCurrentWordIndex((prevWordIndex) => {
+          previousCurrentWordIndex.current = prevWordIndex;
+
+          //UPDATEACTIVEWORDDATA(CURRENTINDEX, NEWINDEX)
+          setWordsData((prevWordsData) => {
+            const newWordsData = [...prevWordsData];
+            newWordsData[prevWordIndex + 1] = {
+              ...newWordsData[prevWordIndex + 1],
+              status: "active",
+            };
+            return newWordsData;
+          });
+
+          return prevWordIndex + 1;
+        });
+      } else {
+        setGameState("gameover");
+        console.log("finalizar juego ");
+      }
+    }
+  }
+
   return (
     <>
       <Header />
@@ -416,6 +479,7 @@ function App() {
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
           value={currentTyping}
+          onBeforeInput={handleBeforeInput}
           onKeyDown={handleOnKeyDown}
           onChange={handleOnChange}
           autoFocus
