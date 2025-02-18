@@ -8,18 +8,19 @@ export function GameOptionsComponent({ selectedOptions, updateGameOption }) {
         {wordsTypes.map((wordType) => {
           return (
             <button
-              key={wordType}
+              key={wordType.id}
               className={`option-button ${
-                selectedOptions.wordsType === wordType && "selected-option"
+                selectedOptions.wordsType === wordType.id && "selected-option"
               }`}
               onMouseDown={(e) =>
-                updateGameOption(e, { prop: "wordsType", value: wordType })
+                updateGameOption(e, { prop: "wordsType", value: wordType.id })
               }
             >
-              {wordType}
+              {wordType.name}
             </button>
           );
         })}
+       
       </div>
       <div className="gameMode-container">
         <div className="mode-selector">

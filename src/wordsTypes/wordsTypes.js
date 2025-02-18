@@ -1,5 +1,5 @@
 export const wordsTypes =[
-    'words',
-    'wordsRomaji',
-    'wordsSpanish',
+    {id:'words',name:'English'},
+    {id:'wordsRomaji',name:'Romaji'},
+    {id:'wordsSpanish',name:'Spanshi'},
 ];

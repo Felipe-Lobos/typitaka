@@ -10,12 +10,19 @@
 .wordsType-container{
     display: flex;
     justify-content: end;
+    flex-wrap: wrap;
+    margin-block: 1em;
+    gap: 0.5em;
+    & button{
+        font-size: 1em;
+    }
+
 }
 .gameMode-container{
     display: flex;
     align-items: end;
     flex-direction: column;
-
+    
 }
 
 

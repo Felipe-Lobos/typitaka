@@ -1,18 +1,21 @@
+body {
+  font-family: Menlo, monospace;
+  
+}
+
 #root{
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   align-content: center;
-  max-width: 1200px;
+  max-width: min(1200px,100vw);
   margin: 0 auto; /* Centrado horizontal */
   padding: 0 15px;
+  /* padding-inline: min(2rem,3%); */
 }
-body {
-  font-family: Menlo, monospace;
-  padding-inline: min(2rem,3%);
-}
+
 
 .paragraph {
   /* filter: blur(3px); */
@@ -50,15 +53,15 @@ body {
     color: indianred;
   }
 }
-
-.letter.active {
-  border-bottom: 2px solid rgba(113, 113, 126, 0.209); /* Ejemplo visual */
-  animation: blink 1.5s  infinite;
+/* REVISAR ESTA PROPIEDAD Y DONDE SE USA (CREO QUE NO SE ESTÁ USANDO */
+/* .word.active {
+  border-bottom: 2px solid rgba(113, 113, 126, 0.209);
+  animation: word-blink 1.5s  infinite;
 }
-@keyframes blink {
+@keyframes word-blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
+  50% { opacity: .6; }
+} */
 
 .stadistics{
   display: flex;
@@ -117,7 +120,7 @@ main{
 .option-display{
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: start;
   font-size: 2rem;
   justify-content: center;
   & > div{
