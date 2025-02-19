@@ -10,7 +10,7 @@ export function CursorComponent({ letterIndex }) {
     <div
        style={{
         // calc(0.54em * 46) `translateX(leftCalc)`
-        transform: `translateX(${leftCalcPx}px)`
+        transform: `translateX(${leftCalcRem}rem)`
         //  left: `${leftCalc}em`,
        }}
       className="cursor"

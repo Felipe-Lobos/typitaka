@@ -1,6 +1,8 @@
+html{
+  font-size: 16px;
+}
 body {
   font-family: Menlo, monospace;
-  
 }
 
 #root{
@@ -19,7 +21,7 @@ body {
 
 .paragraph {
   /* filter: blur(3px); */
-  font-size: 32px;
+  font-size: 2rem;
   /* font-size: 2em; */
   user-select: none;
   height: 128px;

@@ -2,7 +2,7 @@
     position: absolute;
   height: 1em;
   /* left: calc(0.54em * 46); */
-  width: 0.05em;
+  width: 2px;
   background-color: var(--highlight-color);
   animation: blink 1.3s  infinite;
   transform: translateX(0);
