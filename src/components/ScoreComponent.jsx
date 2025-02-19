@@ -9,8 +9,12 @@ export function ScoreComponent({
 }) {
   const elapsedTime = totalTime - timeLeft;
   //WordsPerMinute, LetterPerMinute
-  const wpm = elapsedTime ? ((wordsCount.correct / elapsedTime)* 60).toFixed(0)  : 0;
-  const lpm = elapsedTime ? ((lettersCount.correct / elapsedTime) * 60).toFixed(0) : 0;
+  const wpm = elapsedTime
+    ? ((wordsCount.correct / elapsedTime) * 60).toFixed(0)
+    : 0;
+  const lpm = elapsedTime
+    ? ((lettersCount.correct / elapsedTime) * 60).toFixed(0)
+    : 0;
   const getAccuracy = (totalLettersTyped, correctLettersCount) => {
     if (!totalLettersTyped || !correctLettersCount) return 0;
     const newAccuracy = (
@@ -25,27 +29,35 @@ export function ScoreComponent({
     <div className="score-wrap">
       <div className="score-modal">
         <div className="score-stat">
-          <span>WPM:</span>
+          <span>WPM</span>
           <span>{wpm}</span>
         </div>
         <div className="score-stat">
-          <span>Words: C/I/S<span></span></span>
-          <span>{`${wordsCount.correct} / ${wordsCount.incorrect} / ${wordsCount.missed}`}</span>
+          <span>Words</span>
+          <div className="stat-wrap">
+            <div><span>Correct:</span> {wordsCount.correct} </div>
+            <div><span>Incorrect:</span> {wordsCount.incorrect} </div>
+            <div><span>Missed:</span> {wordsCount.missed} </div>
+          </div>
         </div>
         <div className="score-stat">
-          <span>Letters: C/I/S</span>
-          <span>{`${lettersCount.correct} / ${lettersCount.incorrect} / ${lettersCount.missed}`}</span>
+          <span>Letters</span>
+          <div className="stat-wrap">
+            <div><span>Correct:</span> {lettersCount.correct} </div>
+            <div><span>Incorrect:</span> {lettersCount.incorrect} </div>
+            <div><span>Missed:</span> {lettersCount.missed} </div>
+          </div>
         </div>
         <div className="score-stat">
-          <span>Time:</span>
+          <span>Time</span>
           <span>{elapsedTime}s</span>
         </div>
         <div className="score-stat">
-          <span>Accuaracy:</span>
+          <span>Accuaracy</span>
           <span>{accuaracy}%</span>
         </div>
         <div className="score-stat">
-          <span>LPM:</span>
+          <span>LPM</span>
           <span>{lpm}</span>
         </div>
       </div>

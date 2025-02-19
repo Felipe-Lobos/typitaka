@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import "./styles/DropdownMenu.css";
+import "./styles/ThemeSelector.css";
 import { IoColorPaletteOutline } from "react-icons/io5";
+import {useTheme} from '../context/ThemeContext';
 
-
-export function DropdownMenu() {
+export function ThemeSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const {themeList, selectTheme} = useTheme();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,7 +25,7 @@ export function DropdownMenu() {
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const handleSelect = (option) => {
-    console.log("option:", option);
+    selectTheme(option);
     setIsOpen(false);
   };
   return (
@@ -34,12 +35,12 @@ export function DropdownMenu() {
       </div>
       {isOpen && (
         <div className="dropdown-menu">
-          <div className="dropdown-item" onClick={()=>handleSelect('123')}>
-            primero
-          </div>
-          <div className="dropdown-item" onClick={()=>handleSelect('asd')}>
-            segundo
-          </div>
+          {themeList.map((themeName)=>{
+            return(<div key={themeName} className="dropdown-item" onClick={()=>handleSelect(themeName)}>
+            {themeName}
+          </div>)
+          })}
+
         </div>
       )}
     </div>

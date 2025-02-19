@@ -35,19 +35,19 @@ body {
 }
 .word{
   position: relative;
-  color: gray;
+  color: var(--secondary-text-color);
   display: flex;
   &.active{
-    color: lightgray;
+    color: var(--text-color);
   }
   
 }
 .letter{
   &.correct{
-    color: lightskyblue;
+    color: var(--success-color);
   }
   &.incorrect{
-    color: indianred;
+    color: var(--error-color);
   }
 }
 /* REVISAR ESTA PROPIEDAD Y DONDE SE USA (CREO QUE NO SE ESTÁ USANDO */
@@ -106,7 +106,7 @@ main{
   background-color: transparent;
   border: none;
   font-size: 2.5rem;
-  color: lightgray;
+  /* color: var(--text-color); */
   transition: scale .5s ease;
   &:hover{
     cursor: pointer;

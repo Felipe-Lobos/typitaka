@@ -8,7 +8,7 @@ export function Footer() {
     <footer>
       <div className="info">
         <div className="repository">
-          <a href="">Github </a>
+          <a target="_blank" href="https://github.com/Felipe-Lobos/typitaka">Codigo</a>
           <IoCodeSlashOutline />
         </div>
 {/* 

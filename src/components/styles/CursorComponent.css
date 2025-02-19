@@ -3,9 +3,10 @@
   height: 1em;
   /* left: calc(0.54em * 46); */
   width: 0.05em;
-  background-color: lightpink;
+  background-color: var(--highlight-color);
   animation: blink 1.3s  infinite;
-  transition: left 0.09s ease;
+  transform: translateX(0);
+  transition: transform 0.09s ease;
 }
 
 @keyframes blink {

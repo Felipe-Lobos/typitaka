@@ -9,20 +9,24 @@
 }
 .dropdown-item{
     cursor: pointer;
+    &:hover{
+      color: var(--highlight-color);
+    }
 }
 .dropdown-menu{
     display: flex;
     flex-direction: column;
+    gap: 0.3em;
     align-items: end;
     position: absolute; /* Asegúrate de que tenga position: absolute o relative */
     top: 100%;
     right: 0px;
-    background-color: transparent;
-    border-radius: 2px;
+    background-color: var(--background-color);
+    border-radius: 5px;
     padding: 10px 20px;
     width: auto;
-    border: 1px solid lightblue;
-    z-index: 1; /*  .dropdown-menu con z-index, aunque podría ser 'auto' también en este caso */
+    border: 1px solid var(--highlight-color);
+    z-index: 100; /*  .dropdown-menu con z-index, aunque podría ser 'auto' también en este caso */
 }
 
 /* .dropdown-menu::before{

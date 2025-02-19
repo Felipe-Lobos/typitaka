@@ -10,7 +10,7 @@
 }
 .game-options button {
   font-size: 2rem;
-  color: darkgoldenrod;
+  color: var(--highlight-color);
   background-color: transparent;
   border: none;
   cursor: pointer;

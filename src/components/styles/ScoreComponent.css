@@ -26,7 +26,23 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px solid lightblue;
+  border: 2px solid var(--highlight-color);
   /* background-color: blueviolet; */
   display: flex;
+}
+.stat-wrap{
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  
+  & div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    & span{
+      color: var(--secondary-text-color);
+      font-size: 1rem;
+    }
+  }
 }

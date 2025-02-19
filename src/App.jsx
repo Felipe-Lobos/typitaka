@@ -167,7 +167,7 @@ function App() {
   useEffect(() => {
     // Solo ejecutar si gameOptions ya se cargó
     if (gameOptions === DEFAULT_GAMEOPTIONS) return;
-    if (gameOptions.wordsType !== previousGameOptions.current.wordsType) return;
+    // if (gameOptions.wordsType === previousGameOptions.current.wordsType) return;
     console.log("imported words on useEffect gameOptions", importedWords[0]);
     resetGame();
     localStorage.setItem("gameOptions", JSON.stringify(gameOptions));
@@ -400,9 +400,7 @@ function App() {
   const handleBeforeInput = (event)=>{
     
     if (gameState === "gameover" || gameState === "not_started") return;
-    const { data } = event;
-    console.log("🚀 ~ handleBeforeInput ~ data:", data)
-    
+    const { data } = event;  
     if (data === " ") {
       event.preventDefault();
       //setwordData
