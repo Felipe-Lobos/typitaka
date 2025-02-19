@@ -84,12 +84,13 @@ function App() {
 
   const intializeGame = () => {
     const storedGameOptionsString = localStorage.getItem("gameOptions");
+    console.log("🚀 ~ intializeGame ~ storedGameOptionsString:", storedGameOptionsString)
     const localGameOptions = storedGameOptionsString
       ? JSON.parse(storedGameOptionsString) ?? DEFAULT_GAMEOPTIONS // Usa ?? para valor por defecto si JSON.parse retorna null
       : DEFAULT_GAMEOPTIONS;
 
     if (localGameOptions !== gameOptions) {
-      console.log("update game options");
+      console.log("update game options",localGameOptions);
       setGameOptions((prev) => {
         previousGameOptions.current = prev;
         return {
@@ -103,6 +104,7 @@ function App() {
     } else {
       console.log("opciones cargadas son iguales a las opciones en sistema");
     }
+    console.log("🚀 ~ intializeGame ~ localGameOptions:", localGameOptions)
     loadWordsType(localGameOptions.wordsType)
       .then((newImportedWords) => {
         setImportedWords(() => {
@@ -130,9 +132,9 @@ function App() {
     setWordsData(newWordsData);
   };
 
-  const getNewWordsList = () => {
-    if (importedWords.length === 0) return INITIAL_WORDS;
-    const wordsToUse = [...importedWords];
+  const getNewWordsList = (currentImportedWords) => {
+    if (currentImportedWords.length === 0) return INITIAL_WORDS;
+    const wordsToUse = [...currentImportedWords];
     const numOfWords =
       wordsToUse.length < gameOptions.words
         ? wordsToUse.length - 1
@@ -152,7 +154,21 @@ function App() {
     console.log("🚀 ~ useEffect ~ wordsList:", wordsList);
   }, [wordsList]);
 
+  // useEffect(() => {
+  //   console.log("change words type", gameOptions.wordsType);
+  //   loadWordsType(gameOptions.wordsType)
+  //     .then((newImportedWords) => {
+  //       if (newImportedWords !== importedWords)
+  //         setImportedWords(newImportedWords);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error al cargar la lista:", error);
+  //     });
+  // }, [gameOptions.wordsType]);
+
   useEffect(() => {
+    // Solo ejecutar si gameOptions ya se cargó
+    if (gameOptions === DEFAULT_GAMEOPTIONS) return;
     console.log("change words type", gameOptions.wordsType);
     loadWordsType(gameOptions.wordsType)
       .then((newImportedWords) => {
@@ -162,11 +178,6 @@ function App() {
       .catch((error) => {
         console.error("Error al cargar la lista:", error);
       });
-  }, [gameOptions.wordsType]);
-
-  useEffect(() => {
-    // Solo ejecutar si gameOptions ya se cargó
-    if (gameOptions === DEFAULT_GAMEOPTIONS) return;
     // if (gameOptions.wordsType === previousGameOptions.current.wordsType) return;
     console.log("imported words on useEffect gameOptions", importedWords[0]);
     resetGame();
@@ -183,7 +194,7 @@ function App() {
       importedWords[0]
     );
     if (importedWords.length === 0) return;
-    const newWords = getNewWordsList();
+    const newWords = getNewWordsList(importedWords);
     setWordsList(newWords);
   }, [importedWords]);
 
@@ -195,7 +206,7 @@ function App() {
     console.log("reset");
     setGameState("not_started");
     setTimerKeyProp((prevKey) => prevKey + 1);
-    const newWords = getNewWordsList();
+    const newWords = getNewWordsList(importedWords);
     setWordsList(newWords);
     initializeWordsData(newWords);
     inputRef.current.focus();
