@@ -13,6 +13,7 @@ export function WordsLetterRenderer({
   // Estado para almacenar el índice de la línea activa
   const [activeLine, setActiveLine] = useState(0);
   const lineHeight = 48;
+  const wordRefs = useRef([]);
 
   // const innerWords = wordsData.map((word, wordIndex) => {
   //   const innerLetters = word.letters;
@@ -62,14 +63,19 @@ export function WordsLetterRenderer({
         className="words-wrapper"
       >
         {wordsData.map((word, wordIndex) => {
+          
           const innerLetters = word.letters;
           return (
             <WordComponent
+              ref={(el) => (wordRefs.current[wordIndex] = el)}
               key={`${word.id}${wordIndex}`}
               wordStatus={word.status}
             >
               {wordIndex === currentWordIndex ? (
-                <CursorComponent letterIndex={word.activeLetterIndex} />
+                <CursorComponent 
+                wordRefs={wordRefs}
+                wordIndex={wordIndex}
+                letterIndex={word.activeLetterIndex} />
               ) : (
                 ""
               )}
