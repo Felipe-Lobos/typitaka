@@ -10,9 +10,6 @@ import { ScoreComponent } from "./components/ScoreComponent";
 import { RiResetLeftLine } from "react-icons/ri";
 import { PiTimerLight } from "react-icons/pi";
 import { RxTextNone } from "react-icons/rx";
-
-import { GameModesOptions } from "./components/GameModesOptions";
-import { WordsTypeSelector } from "./components/WordsTypeSelector";
 import { GameOptionsComponent } from "./components/GameOptionsComponent";
 
 function App() {
@@ -401,13 +398,6 @@ function App() {
     });
   };
 
-  const updateImportedWords = (newWordsType) => {
-    setGameOptions((prev) => {
-      previousGameOptions.current = prev;
-      return { ...prev, wordsType: newWordsType };
-    });
-  };
-
   const handleBeforeInput = (event)=>{
     
     if (gameState === "gameover" || gameState === "not_started") return;
@@ -484,6 +474,7 @@ function App() {
           autoCapitalize="off"
           autoComplete="off"
           autoCorrect="off"
+          spellCheck="false"
           className="word-input"
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
@@ -504,8 +495,6 @@ function App() {
           onMouseDown={(e) => e.preventDefault()}
           className="words-container"
         >
-          {/* <WordsTypeSelector updateImportedWords={updateImportedWords} /> */}
-
           {gameState !== "gameover" && (
             <div className="option-display">
               <div

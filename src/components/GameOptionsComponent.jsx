@@ -4,7 +4,9 @@ import { wordsTypes } from "../wordsTypes/wordsTypes";
 export function GameOptionsComponent({ selectedOptions, updateGameOption }) {
   return (
     <div className="game-options-container">
+      
       <div className="wordsType-container">
+        <span>words list</span>
         {wordsTypes.map((wordType) => {
           return (
             <button
@@ -24,6 +26,7 @@ export function GameOptionsComponent({ selectedOptions, updateGameOption }) {
       </div>
       <div className="gameMode-container">
         <div className="mode-selector">
+          <span>mode</span>
           <button
             onMouseDown={(e) =>
               updateGameOption(e, { prop: "mode", value: "words" })

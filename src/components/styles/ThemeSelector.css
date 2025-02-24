@@ -6,6 +6,12 @@
     font-size: 2rem;
   border-radius: 50%;
   cursor: pointer;
+  transition: scale .5s ease;
+  &:hover{
+    cursor: pointer;
+    scale: 1.2;
+    color: var(--highlight-color);
+  }
 }
 .dropdown-item{
     cursor: pointer;

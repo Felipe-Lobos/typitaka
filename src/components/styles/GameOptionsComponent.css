@@ -5,14 +5,23 @@
     width: 100%;
     align-items: end;
     justify-content: space-between;
+
+    & span{
+        color: var(--secondary-text-color);
+        font-weight: 100;
+        font-size: 0.8rem;
+    }
 }
 
 .wordsType-container{
     display: flex;
     justify-content: end;
+    align-items: center;
     flex-wrap: wrap;
     margin-block: 1em;
     gap: 0.5em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px ridge var(--highlight-color);
     & button{
         font-size: 1em;
     }
@@ -23,6 +32,9 @@
     align-items: end;
     flex-direction: column;
     
+    border: 1px ridge var(--highlight-color);
+    border-radius: 5px;
+    padding: 7px 15px;
 }
 
 
@@ -31,6 +43,10 @@
     background-color: transparent;
     border: none;
     font-size: 1.5em;
+
+    &:hover{
+        color: var(--highlight-color);
+    }
 }
 .selected-option{
     color: var(--highlight-color);
