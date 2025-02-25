@@ -463,7 +463,7 @@ function App() {
   return (
     <>
       <Header />
-      <section className="option-section">
+      <section className={`option-section ${gameState === 'playing' ? 'hidden' :''}`}>
         <GameOptionsComponent
           selectedOptions={gameOptions}
           updateGameOption={handleUpdateGameOptions}
@@ -471,7 +471,9 @@ function App() {
       </section>
       <main>
         <input
-          autoCapitalize="off"
+        inputMode=""
+          type="search"
+          autoCapitalize="none"
           autoComplete="off"
           autoCorrect="off"
           spellCheck="false"
@@ -484,7 +486,6 @@ function App() {
           onChange={handleOnChange}
           autoFocus
           ref={inputRef}
-          type="text"
         />
         {/* <GameModesOptions
           gameMode={gameOptions.mode}
