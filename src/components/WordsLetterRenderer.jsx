@@ -12,31 +12,11 @@ export function WordsLetterRenderer({
   const paragraphRef = useRef(null);
   // Estado para almacenar el índice de la línea activa
   const [activeLine, setActiveLine] = useState(0);
+  //TODO: Hacer que el lineHeigth se calcule en base al alto de las letras que tiene el navegador
   const lineHeight = 48;
   const wordRefs = useRef([]);
 
-  // const innerWords = wordsData.map((word, wordIndex) => {
-  //   const innerLetters = word.letters;
-  //   return (
-  //     <WordComponent key={`${word.id}${wordIndex}`} wordStatus={word.status}>
-  //       {wordIndex === currentWordIndex ? (
-  //         <CursorComponent letterIndex={word.activeLetterIndex} />
-  //       ) : (
-  //         ""
-  //       )}
-  //       {innerLetters.map((letter, letterIndex) => {
-  //         return (
-  //           <LetterComponent
-  //             letterChar={letter.char}
-  //             letterStatus={letter.status}
-  //             key={`${word.id}${wordIndex}-${letter.char}${letterIndex}`}
-  //           />
-  //         );
-  //       })}
-  //     </WordComponent>
-  //   );
-  // });
-
+  //Funcion para mover el parrafo hacia arriba (Simulando el scroll de un texto)
   useEffect(() => {
     // Solo procedemos si tenemos el contenedor y hay hijos
     if (paragraphRef.current && paragraphRef.current.children.length > 0) {
