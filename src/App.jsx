@@ -81,13 +81,16 @@ function App() {
 
   const intializeGame = () => {
     const storedGameOptionsString = localStorage.getItem("gameOptions");
-    console.log("🚀 ~ intializeGame ~ storedGameOptionsString:", storedGameOptionsString)
+    console.log(
+      "🚀 ~ intializeGame ~ storedGameOptionsString:",
+      storedGameOptionsString
+    );
     const localGameOptions = storedGameOptionsString
       ? JSON.parse(storedGameOptionsString) ?? DEFAULT_GAMEOPTIONS // Usa ?? para valor por defecto si JSON.parse retorna null
       : DEFAULT_GAMEOPTIONS;
 
     if (localGameOptions !== gameOptions) {
-      console.log("update game options",localGameOptions);
+      console.log("update game options", localGameOptions);
       setGameOptions((prev) => {
         previousGameOptions.current = prev;
         return {
@@ -101,7 +104,7 @@ function App() {
     } else {
       console.log("opciones cargadas son iguales a las opciones en sistema");
     }
-    console.log("🚀 ~ intializeGame ~ localGameOptions:", localGameOptions)
+    console.log("🚀 ~ intializeGame ~ localGameOptions:", localGameOptions);
     loadWordsType(localGameOptions.wordsType)
       .then((newImportedWords) => {
         setImportedWords(() => {
@@ -398,10 +401,9 @@ function App() {
     });
   };
 
-  const handleBeforeInput = (event)=>{
-    
+  const handleBeforeInput = (event) => {
     if (gameState === "gameover" || gameState === "not_started") return;
-    const { data } = event;  
+    const { data } = event;
     if (data === " ") {
       event.preventDefault();
       //setwordData
@@ -458,12 +460,14 @@ function App() {
         console.log("finalizar juego ");
       }
     }
-  }
+  };
 
   return (
     <>
       <Header />
-      <section className={`option-section ${gameState === 'playing' ? 'hidden' :''}`}>
+      <section
+        className={`option-section ${gameState === "playing" ? "hidden" : ""}`}
+      >
         <GameOptionsComponent
           selectedOptions={gameOptions}
           updateGameOption={handleUpdateGameOptions}
@@ -471,7 +475,8 @@ function App() {
       </section>
       <main>
         <input
-        inputMode=""
+          id="word-input"
+          inputMode="text"
           type="search"
           autoCapitalize="none"
           autoComplete="off"
@@ -494,7 +499,7 @@ function App() {
 
         <div
           onMouseDown={(e) => e.preventDefault()}
-          className="words-container"
+          id="words-container"
         >
           {gameState !== "gameover" && (
             <div className="option-display">
@@ -544,7 +549,7 @@ function App() {
             <RiResetLeftLine />
           </button>
         </div>
-        <div className="score-container">
+        <div id="score-container">
           {gameState === "gameover" && (
             <ScoreComponent
               wordsCount={wordsCount}

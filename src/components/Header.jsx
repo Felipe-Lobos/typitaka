@@ -3,9 +3,9 @@ import { ThemeSelector } from './ThemeSelector';
 
 export function Header() {
   return (
-    <div className="header">
-      <h1>TipyTaka</h1>
+    <header id="header">
+      <h1>TypiTaka</h1>
       <ThemeSelector />
-    </div>
+    </header>
   );
 }
