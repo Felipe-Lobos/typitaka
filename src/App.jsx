@@ -476,6 +476,7 @@ function App() {
       </section>
       <main>
         <input
+          onPaste={(e) => e.preventDefault()}
           id="word-input"
           inputMode="text"
           type="search"
