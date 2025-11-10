@@ -103,7 +103,7 @@ main{
   margin-bottom: 15vh;
 }
 
-.reset-button{
+#reset-button{
   margin: 1rem;
   background-color: transparent;
   border: none;
@@ -132,7 +132,7 @@ main{
   position: fixed;
 }
 
-.option-section{
+#option-section{
  width: 100%;
 }
 

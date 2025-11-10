@@ -466,7 +466,8 @@ function App() {
     <>
       <Header />
       <section
-        className={`option-section ${gameState === "playing" ? "hidden" : ""}`}
+        id="option-section"
+        className={`${gameState === "playing" ? "hidden" : ""}`}
       >
         <GameOptionsComponent
           selectedOptions={gameOptions}
@@ -543,7 +544,7 @@ function App() {
           )}
 
           <button
-            className="reset-button"
+            id="reset-button"
             onMouseDown={(e) => handleResetButton(e)}
           >
             <RiResetLeftLine />
