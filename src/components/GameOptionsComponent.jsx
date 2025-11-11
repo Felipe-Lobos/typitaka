@@ -49,7 +49,7 @@ export function GameOptionsComponent({ selectedOptions, updateGameOption }) {
           </button>
         </div>
         {selectedOptions.mode === "time" && (
-          <div className="mode-suboptions">
+          <div className="gamemode-suboptions">
             <span>Time</span>
             <button
               onMouseDown={(e) =>
@@ -85,7 +85,7 @@ export function GameOptionsComponent({ selectedOptions, updateGameOption }) {
         )}
 
         {selectedOptions.mode === "words" && (
-          <div className="mode-suboptions">
+          <div className="gamemode-suboptions">
             <span>№ Words</span>
             <button
               onMouseDown={(e) =>
