@@ -1,0 +1,73 @@
+# .github/workflows/deploy.yml (Repo B - Aplicación)
+
+name: Build, Deploy & Trigger Tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # 1. JOB DE DESPLIEGUE (BUILD Y SUBIDA A GH-PAGES)
+  deploy:
+    runs-on: ubuntu-latest  # Especifica la máquina virtual
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write # Permiso para escribir en el repo (necesario para el despliegue)
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies and Build (Vite)
+        run: |
+          npm install
+          npm run build 
+          
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist # La carpeta que genera tu npm run build
+          
+      - name: Publish Deployment
+        uses: actions/deploy-pages@v4
+
+
+  # 2. JOB DE PRUEBAS E2E (DISPARADOR)
+  trigger-tests:
+    needs: deploy # CRUCIAL: Espera a que el despliegue esté completo
+    runs-on: ubuntu-latest
+    
+    # Este job NO necesita permisos de 'contents: write', solo usa el PAT
+    # El secreto TEST_REPO_PAT debe estar configurado en este repo (Repo B)
+
+    steps:
+      - name: Get Deployment URL
+        id: get_url
+        run: |
+          # La URL la obtiene del paso de despliegue si se usa Environment y configure-pages
+          # Para la URL clásica de GH-Pages, usa esta estructura:
+          APP_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+
+      - name: Dispatch Test Workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TEST_REPO_PAT }} # El token Fine-Grained
+          repository: Felipe-Lobos/typitaka_testing 
+          event-type: run_e2e_tests
+          client-payload: '{ "app_url": "${{ env.APP_URL }}" }'
