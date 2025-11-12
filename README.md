@@ -2,6 +2,8 @@
 
 Aplicación de test de mecanografía inspirada en MonkeyType, construida con React. Permite medir WPM en tiempo real, precisión y practicar con diferentes duraciones y listas de palabras.
 
+INTEGRACION CI/CD CON TESTING SELENIUM
+
 ## Características principales
 - Cálculo de WPM en tiempo real.
 - Seguimiento de precisión (accuracy).
