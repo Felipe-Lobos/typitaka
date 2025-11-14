@@ -6,6 +6,7 @@ INTEGRACION CI/CD CON TESTING SELENIUM
 Nueva prueba ci/cd
 tercera prueba
 cuarta
+ya funcionando el workflow, ahora probando dorny resport wn git hub actions
 
 ## Características principales
 - Cálculo de WPM en tiempo real.
