@@ -9,6 +9,7 @@ cuarta
 ya funcionando el workflow, ahora probando dorny resport wn git hub actions
 actualizacion de la version de dorny report (v2)
 cambios al reporter del yml por jest-junit
+actualziacion ajava-junit
 
 ## Características principales
 - Cálculo de WPM en tiempo real.
