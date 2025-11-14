@@ -7,6 +7,7 @@ Nueva prueba ci/cd
 tercera prueba
 cuarta
 ya funcionando el workflow, ahora probando dorny resport wn git hub actions
+actualizacion de la version de dorny report (v2)
 
 ## Características principales
 - Cálculo de WPM en tiempo real.
