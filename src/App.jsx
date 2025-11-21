@@ -49,7 +49,8 @@ function App() {
    * ]
    */
 
-  //ESTO PUEDE SER UN REACT CUSTOM HOOK
+  //TODO: hacer que al terminar de escribir si la ultima palabra o letra está incorrecta que igual  termine el juego
+  //TODO: ESTO PUEDE SER UN REACT CUSTOM HOOK
   const { wordsCount, lettersCount } = useMemo(() => {
     let wordsCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };
     let lettersCount = { correct: 0, incorrect: 0, missed: 0, total: 0 };

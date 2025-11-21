@@ -28,11 +28,11 @@ export function ScoreComponent({
   return (
     <div className="score-wrap">
       <div className="score-modal">
-        <div className="score-stat">
+        <div className="score-stat wpm-stat">
           <span>WPM</span>
           <span>{wpm}</span>
         </div>
-        <div className="score-stat">
+        <div className="score-stat words-stat">
           <span>Words</span>
           <div className="stat-wrap">
             <div><span>Correct:</span> {wordsCount.correct} </div>
@@ -40,7 +40,7 @@ export function ScoreComponent({
             <div><span>Missed:</span> {wordsCount.missed} </div>
           </div>
         </div>
-        <div className="score-stat">
+        <div className="score-stat letters-stat">
           <span>Letters</span>
           <div className="stat-wrap">
             <div><span>Correct:</span> {lettersCount.correct} </div>
@@ -48,15 +48,15 @@ export function ScoreComponent({
             <div><span>Missed:</span> {lettersCount.missed} </div>
           </div>
         </div>
-        <div className="score-stat">
+        <div className="score-stat time-stat">
           <span>Time</span>
           <span>{elapsedTime}s</span>
         </div>
-        <div className="score-stat">
+        <div className="score-stat accuaracy-stat">
           <span>Accuaracy</span>
           <span>{accuaracy}%</span>
         </div>
-        <div className="score-stat">
+        <div className="score-stat lpm-stat">
           <span>LPM</span>
           <span>{lpm}</span>
         </div>
