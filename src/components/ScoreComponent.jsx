@@ -35,17 +35,17 @@ export function ScoreComponent({
         <div className="score-stat words-stat">
           <span>Words</span>
           <div className="stat-wrap">
-            <div><span>Correct:</span> {wordsCount.correct} </div>
-            <div><span>Incorrect:</span> {wordsCount.incorrect} </div>
-            <div><span>Missed:</span> {wordsCount.missed} </div>
+            <div><span>Correct:</span> <span>{wordsCount.correct} </span></div>
+            <div><span>Incorrect:</span> <span>{wordsCount.incorrect}</span> </div>
+            <div><span>Missed:</span> <span>{wordsCount.missed}</span> </div>
           </div>
         </div>
         <div className="score-stat letters-stat">
           <span>Letters</span>
           <div className="stat-wrap">
-            <div><span>Correct:</span> {lettersCount.correct} </div>
-            <div><span>Incorrect:</span> {lettersCount.incorrect} </div>
-            <div><span>Missed:</span> {lettersCount.missed} </div>
+            <div><span>Correct:</span> <span>{lettersCount.correct}</span> </div>
+            <div><span>Incorrect:</span> <span>{lettersCount.incorrect}</span> </div>
+            <div><span>Missed:</span> <span>{lettersCount.missed}</span> </div>
           </div>
         </div>
         <div className="score-stat time-stat">
